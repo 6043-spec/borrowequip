@@ -2,76 +2,155 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ระบบยืม-คืนอุปกรณ์วิทยาศาสตร์</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#12302c;--bg:#eff3f1;--card:#fff;--line:#d5dfdb;--accent:#0f766e;--warn:#b45309;--bad:#b91c1c;--mute:#5b6f6a}
+:root{--ink:#0f2233;--mute:#62748a;--line:#e4eaf2;--bg:#f4f7fb;--ac:#2457f5;--ac2:#e9efff;--ok:#0f9d76;--ok2:#e3f7f0;--wn:#c77700;--wn2:#fff3dc;--bad:#d6333f;--bad2:#fde8ea;--sh:0 1px 2px rgba(15,34,51,.04),0 10px 28px -14px rgba(36,87,245,.22)}
 *{box-sizing:border-box}
-body{margin:0;font:16px/1.5 Sarabun,sans-serif;background:var(--bg);color:var(--ink)}
-button,input,select{font:inherit}
-button{cursor:pointer;border:0;border-radius:8px;padding:.55rem .9rem;background:var(--accent);color:#fff;font-weight:500}
-button.alt{background:#fff;color:var(--ink);border:1px solid var(--line)}
-button.bad{background:var(--bad)}
-button:disabled{opacity:.4;cursor:not-allowed}
-:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
-input,select{width:100%;padding:.55rem .7rem;border:1px solid var(--line);border-radius:8px;background:#fff}
-label{display:block;font-size:.9rem;color:var(--mute);margin:.7rem 0 .2rem}
+body{margin:0;font:16px/1.55 Sarabun,sans-serif;color:var(--ink);min-height:100vh;
+  background:radial-gradient(900px 480px at 8% -8%,#e1eaff 0,transparent 60%),radial-gradient(700px 420px at 100% 0,#d9f6ec 0,transparent 55%),var(--bg) fixed}
+h1,h2,.num,.brand b{font-family:Prompt,Sarabun,sans-serif;font-weight:600;margin:0;letter-spacing:-.01em}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;border-radius:11px;padding:.6rem 1.05rem;background:var(--ac);color:#fff;font-weight:500;box-shadow:0 8px 16px -8px rgba(36,87,245,.6);transition:transform .15s,box-shadow .15s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:none}
+button.alt{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+button.bad{background:var(--bad);box-shadow:0 8px 16px -8px rgba(214,51,63,.6)}
+button.ghost{background:none;box-shadow:none;color:var(--mute);padding:.4rem .6rem}
+button:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+:focus-visible{outline:3px solid #ffb703;outline-offset:2px}
+input,select{width:100%;height:46px;padding:0 .9rem;border:1px solid var(--line);border-radius:12px;background:#fff;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus{outline:0;border-color:var(--ac);box-shadow:0 0 0 4px rgba(36,87,245,.14)}
+label{display:block;font-size:.88rem;font-weight:500;color:var(--mute);margin:.9rem 0 .3rem}
 [hidden]{display:none!important}
-header{background:var(--ink);color:#fff;padding:.7rem 1rem;display:flex;align-items:center;gap:.8rem}
-header b{flex:1;font-size:1.05rem}
-header small{opacity:.75}
-nav{display:flex;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
-nav button{flex:1;background:none;color:var(--mute);border-radius:0;padding:.8rem .3rem;border-bottom:3px solid transparent}
-nav button.on{color:var(--accent);border-color:var(--accent)}
-main{max-width:760px;margin:0 auto;padding:1rem}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.8rem 1rem;margin-bottom:.7rem}
-.row{display:flex;gap:.6rem;align-items:center}
-.grow{flex:1;min-width:0}
 .mute{color:var(--mute);font-size:.88rem}
-.tag{display:inline-block;padding:.05rem .55rem;border-radius:99px;font-size:.8rem;background:#e3efec;color:var(--accent)}
-.tag.w{background:#fdf0dc;color:var(--warn)}.tag.b{background:#fbe3e3;color:var(--bad)}
-.qty{width:4.5rem;text-align:center}
-#login{max-width:360px;margin:12vh auto;padding:1.4rem}
-#login h1{font-size:1.4rem;margin:0 0 .3rem}
-#toast{position:fixed;left:50%;bottom:1.2rem;transform:translateX(-50%);background:var(--ink);color:#fff;padding:.6rem 1rem;border-radius:8px;max-width:90vw;z-index:20}
+.row{display:flex;gap:.7rem;align-items:center}.grow{flex:1;min-width:0}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.1rem 1.2rem;box-shadow:var(--sh)}
+.tag{display:inline-flex;align-items:center;gap:.3rem;padding:.08rem .65rem;border-radius:99px;font-size:.8rem;font-weight:500;background:var(--ok2);color:var(--ok)}
+.tag.w{background:var(--wn2);color:var(--wn)}.tag.b{background:var(--bad2);color:var(--bad)}.tag.n{background:var(--ac2);color:var(--ac)}
+.qty{width:4.8rem;text-align:center;height:42px}
+ 
+/* ---------- เข้าสู่ระบบ ---------- */
+#login{min-height:100vh;display:grid;align-items:center;gap:2rem;padding:1.5rem;max-width:1080px;margin:0 auto}
+.hero h1{font-size:clamp(1.9rem,4.6vw,3rem);line-height:1.2;max-width:15ch}
+.hero p{color:var(--mute);font-size:1.08rem;max-width:34ch;margin:1rem 0 1.4rem}
+.hero svg{width:min(240px,55%);height:auto}
+.sign{padding:1.8rem}
+.sign h2{font-size:1.35rem}
+@media(min-width:900px){#login{grid-template-columns:1.15fr .85fr}}
+ 
+/* ---------- โครงแอป ---------- */
+#app{display:block}
+aside{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;background:rgba(255,255,255,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:6}
+.brand{display:flex;align-items:center;gap:.65rem}
+.logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#2457f5,#19c3a6);box-shadow:0 8px 16px -8px rgba(36,87,245,.7)}
+.logo svg{width:22px;height:22px}
+.brand small{display:block;color:var(--mute);font-size:.75rem;line-height:1.1}
+.me{display:flex;align-items:center;gap:.6rem}
+.av{width:36px;height:36px;border-radius:50%;background:var(--ac2);color:var(--ac);display:grid;place-items:center;font-weight:600}
+.me .nm{line-height:1.2}.me .nm small{display:block;color:var(--mute);font-size:.75rem}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:.3rem .4rem calc(.3rem + env(safe-area-inset-bottom))}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:.1rem;background:none;color:var(--mute);box-shadow:none;padding:.4rem .2rem;font-size:.78rem;border-radius:12px}
+nav button svg{width:22px;height:22px}
+nav button.on{color:var(--ac);background:var(--ac2)}
+main{max-width:1000px;margin:0 auto;padding:1.2rem 1rem 6.5rem}
+.page-h{margin:.2rem 0 1rem}.page-h h2{font-size:1.45rem}
+@media(min-width:900px){
+  #app{display:grid;grid-template-columns:250px 1fr}
+  aside{position:sticky;top:0;height:100vh;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:1.4rem;padding:1.4rem 1rem;border-bottom:0;border-right:1px solid var(--line)}
+  nav{position:static;flex-direction:column;gap:.25rem;border:0;background:none;backdrop-filter:none;padding:0;flex:1}
+  nav button{flex-direction:row;gap:.75rem;padding:.7rem .9rem;font-size:1rem;justify-content:flex-start}
+  .me{border-top:1px solid var(--line);padding-top:1rem}.me .nm{flex:1}
+  main{padding:1.8rem 2rem 3rem}
+}
+ 
+/* ---------- เนื้อหา ---------- */
+.stats{display:flex;margin-bottom:1rem;padding:.9rem 0}
+.stats div{flex:1;padding:0 1.2rem;border-left:1px solid var(--line)}.stats div:first-child{border:0}
+.num{font-size:1.7rem;line-height:1.1;display:block}
+.tools{display:flex;gap:.6rem;margin-bottom:1rem}
+.tools input{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2362748a' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat .8rem center/20px;padding-left:2.6rem}
+.grid{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+.eq{display:flex;flex-direction:column;gap:.7rem}
+.ico{width:46px;height:46px;border-radius:14px;background:var(--ac2);display:grid;place-items:center;font-size:1.4rem;flex:none}
+.eq b{font-size:1.02rem}
+.meter{height:7px;border-radius:9px;background:#e8eef6;overflow:hidden}.meter i{display:block;height:100%;border-radius:9px;background:var(--ok)}
+.meter.low i{background:#f5a524}.meter.zero i{background:var(--bad)}
+.eq .foot{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem}
+.split{display:grid;gap:1rem;align-items:start}
+@media(min-width:900px){.split{grid-template-columns:1.2fr 1fr}.split>.card:last-child{position:sticky;top:1.4rem}}
+.line{display:flex;align-items:center;gap:.7rem;padding:.75rem 0;border-bottom:1px solid var(--line)}.line:last-child{border:0}
+.loan .head{display:flex;align-items:flex-start;gap:.7rem;margin-bottom:.4rem}
+.loan .it{display:flex;align-items:center;gap:.6rem;padding:.55rem 0;border-top:1px dashed var(--line)}
+.loan select{width:8.2rem;height:42px}
+.fgrid{display:grid;gap:0 1rem;grid-template-columns:1fr 1fr}@media(max-width:560px){.fgrid{grid-template-columns:1fr}}
+.empty{text-align:center;color:var(--mute);padding:3rem 1rem}.empty .ico{margin:0 auto .8rem;width:64px;height:64px;font-size:2rem}
+.chk{display:flex;align-items:center;gap:.6rem;margin-top:1rem;color:var(--ink);font-size:1rem}.chk input{width:20px;height:20px}
+ 
+#toast{position:fixed;left:50%;bottom:5.5rem;transform:translateX(-50%);background:var(--ink);color:#fff;padding:.7rem 1.1rem;border-radius:12px;max-width:90vw;z-index:30;box-shadow:0 14px 30px -10px rgba(15,34,51,.5)}
 #toast.err{background:var(--bad)}
-#scan{position:fixed;inset:0;background:rgba(10,25,22,.85);z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:1rem}
-#reader{width:min(92vw,420px);background:#000;border-radius:12px;overflow:hidden}
-.empty{text-align:center;color:var(--mute);padding:2rem 0}
+@media(min-width:900px){#toast{bottom:1.6rem}}
+#scan{position:fixed;inset:0;background:rgba(15,34,51,.82);backdrop-filter:blur(6px);z-index:25;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:1rem;color:#fff}
+#reader{width:min(92vw,420px);background:#000;border-radius:20px;overflow:hidden}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-
-<section id="login" class="card">
-  <h1>ระบบยืม-คืนอุปกรณ์วิทยาศาสตร์</h1>
-  <div class="mute">เข้าสู่ระบบด้วยรหัสผู้ใช้และ PIN</div>
-  <label for="uid">รหัสผู้ใช้</label><input id="uid" autocomplete="username">
-  <label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password">
-  <p><button id="btnLogin" style="width:100%">เข้าสู่ระบบ</button></p>
+ 
+<section id="login">
+  <div class="hero">
+    <svg viewBox="0 0 120 120" fill="none" aria-hidden="true">
+      <path d="M48 10h24M52 10v34L20 94a9 9 0 0 0 8 14h64a9 9 0 0 0 8-14L68 44V10" stroke="#0f2233" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M31 78h58l11 18a7 7 0 0 1-6 11H26a7 7 0 0 1-6-11z" fill="#2457f5" fill-opacity=".85"/>
+      <circle cx="52" cy="92" r="4" fill="#fff" fill-opacity=".8"/><circle cx="68" cy="86" r="2.6" fill="#fff" fill-opacity=".7"/><circle cx="76" cy="98" r="3" fill="#19c3a6"/>
+    </svg>
+    <h1>ห้องปฏิบัติการพร้อมใช้ ทุกชิ้นตามหาได้</h1>
+    <p>สแกน QR เพื่อยืม คืนบางส่วนได้ และเห็นทันทีว่าอุปกรณ์ชิ้นไหนว่างอยู่</p>
+  </div>
+  <div class="card sign">
+    <h2>เข้าสู่ระบบ</h2>
+    <label for="uid">รหัสผู้ใช้</label><input id="uid" autocomplete="username">
+    <label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password">
+    <p style="margin:1.3rem 0 0"><button id="btnLogin" style="width:100%;height:48px">เข้าสู่ระบบ</button></p>
+  </div>
 </section>
-
+ 
 <div id="app" hidden>
-  <header><b>ห้องปฏิบัติการวิทยาศาสตร์</b><small id="who"></small><button class="alt" id="btnOut">ออก</button></header>
-  <nav id="tabs"></nav>
+  <aside>
+    <div class="brand"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></div>
+      <div><b>Science Lab</b><small>ยืม-คืนอุปกรณ์</small></div></div>
+    <nav id="tabs"></nav>
+    <div class="me"><div class="av" id="av"></div><div class="nm" id="who"></div><button class="ghost" id="btnOut">ออก</button></div>
+  </aside>
   <main id="view"></main>
 </div>
-
-<div id="scan" hidden><div id="reader"></div><button class="alt" id="btnStop">ปิดกล้อง</button></div>
+ 
+<div id="scan" hidden><b>ส่องกล้องไปที่ QR ของอุปกรณ์</b><div id="reader"></div><button class="alt" id="btnStop">ปิดกล้อง</button></div>
 <div id="toast" hidden></div>
-
+ 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script>
 // ===== ตั้งค่า: วาง URL ของ Web App ที่ได้จากการ Deploy Apps Script =====
-const API_URL = 'https://script.google.com/macros/s/AKfycbygaA618tTTm6LVLuu17AvzVBtdbRPDD3iuIFfcmH6PddGeRJhIUNjeJPaFOXoLGsrr/exec';
-
+const API_URL = "https://script.google.com/macros/s/AKfycby7ePany_46teBC_QVXftLWvaMoVhni-uq5Q1m2A6oAoEYcoMGixxpIGQ__hOc3JdSUFA/exec";
+ 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const S = { token: null, user: null, equip: [], loans: [], cart: {}, tab: "equip", q: "" };
 const ROLE = { admin: "ผู้ดูแลระบบ", teacher: "ครู", head: "หัวหน้ากลุ่มสาระ", student: "นักเรียน", executive: "ผู้บริหาร" };
 const canLoan = () => ["admin", "teacher", "head"].includes(S.user.role);
-
+const svg = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const ICON = {
+  equip: svg('<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/>'),
+  cart: svg('<path d="M3 4h2l2.4 11h10l2-8H6.5"/><circle cx="9" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/>'),
+  loans: svg('<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11h6M9 15h4"/>'),
+  admin: svg('<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>')
+};
+const catIco = c => ({ "เครื่องแก้ว": "🧪", "กล้องจุลทรรศน์": "🔬", "ชุดวงจรไฟฟ้า": "⚡", "เครื่องชั่ง/เครื่องวัด": "⚖️", "เครื่องมือทั่วไป": "🧰", "สารเคมี": "⚗️" }[c] || "🔹");
+ 
 async function api(action, payload = {}) {
   const res = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify({ action, token: S.token, payload }) });
@@ -84,7 +163,7 @@ function toast(msg, err) {
   clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3500);
 }
 async function run(fn) { try { await fn(); } catch (e) { toast(e.message, true); } }
-
+ 
 // ===== เข้าสู่ระบบ =====
 $("#btnLogin").onclick = () => run(async () => {
   const d = await api("login", { user_id: $("#uid").value, pin: $("#pin").value });
@@ -95,10 +174,11 @@ $("#btnLogin").onclick = () => run(async () => {
 $("#pin").onkeydown = e => { if (e.key === "Enter") $("#btnLogin").click(); };
 function logout() { sessionStorage.removeItem("sess"); location.reload(); }
 $("#btnOut").onclick = logout;
-
+ 
 async function start() {
   $("#login").hidden = true; $("#app").hidden = false;
-  $("#who").textContent = S.user.name + " · " + ROLE[S.user.role];
+  $("#av").textContent = (S.user.name || "?").trim().charAt(0);
+  $("#who").innerHTML = `${esc(S.user.name)}<small>${ROLE[S.user.role] || ""}</small>`;
   await refresh();
 }
 async function refresh() {
@@ -107,8 +187,9 @@ async function refresh() {
     render();
   });
 }
-
+ 
 // ===== แสดงผล =====
+const head = (t, s) => `<div class="page-h"><h2>${t}</h2><div class="mute">${s}</div></div>`;
 function render() {
   const n = Object.keys(S.cart).length;
   const tabs = [["equip", "อุปกรณ์"]];
@@ -116,76 +197,82 @@ function render() {
   tabs.push(["loans", "รายการยืม"]);
   if (S.user.role === "admin") tabs.push(["admin", "จัดการ"]);
   if (!tabs.some(t => t[0] === S.tab)) S.tab = "equip";
-  $("#tabs").innerHTML = tabs.map(t => `<button data-tab="${t[0]}" class="${S.tab === t[0] ? "on" : ""}">${t[1]}</button>`).join("");
+  $("#tabs").innerHTML = tabs.map(t => `<button data-tab="${t[0]}" class="${S.tab === t[0] ? "on" : ""}">${ICON[t[0]]}<span>${t[1]}</span></button>`).join("");
   $("#view").innerHTML = ({ equip: vEquip, cart: vCart, loans: vLoans, admin: vAdmin })[S.tab]();
 }
-$("#tabs").onclick = e => { const t = e.target.dataset.tab; if (t) { S.tab = t; render(); } };
-
+$("#tabs").onclick = e => { const b = e.target.closest("[data-tab]"); if (b) { S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); } };
+ 
+const isLate = l => l.status !== "รออนุมัติ" && String(l.due_date).slice(0, 10) < new Date().toISOString().slice(0, 10);
 function vEquip() {
   const q = S.q.toLowerCase();
   const list = S.equip.filter(e => !q || (e.name + e.equip_id + e.category + e.location).toLowerCase().includes(q));
-  return `<div class="row"><input id="q" placeholder="ค้นหาชื่อ รหัส หมวด หรือที่เก็บ" value="${esc(S.q)}" class="grow">
-    ${canLoan() ? '<button id="btnScan">สแกน QR</button>' : ""}</div><div style="height:.8rem"></div>` +
-    (list.map(e => {
-      const ok = e.status === "ใช้งานได้" && Number(e.available_qty) > 0;
-      return `<div class="card row"><div class="grow"><b>${esc(e.name)}</b> <span class="mute">${esc(e.equip_id)}</span><br>
-        <span class="mute">${esc(e.category)} · ${esc(e.location)}</span><br>
-        <span class="tag ${ok ? "" : "b"}">ว่าง ${e.available_qty}/${e.total_qty}</span>
-        ${e.status !== "ใช้งานได้" ? `<span class="tag b">${esc(e.status)}</span>` : ""}
+  const out = S.loans.filter(l => l.status !== "รออนุมัติ").length;
+  return head("อุปกรณ์ในห้องปฏิบัติการ", "ค้นหาและเลือกอุปกรณ์ที่ต้องการยืม") +
+    `<div class="card stats"><div><span class="num">${S.equip.length}</span><span class="mute">รายการอุปกรณ์</span></div>
+      <div><span class="num">${out}</span><span class="mute">ใบยืมที่ค้างอยู่</span></div>
+      <div><span class="num" style="color:${S.loans.some(isLate) ? "var(--bad)" : "inherit"}">${S.loans.filter(isLate).length}</span><span class="mute">เกินกำหนดคืน</span></div></div>
+    <div class="tools"><input id="q" placeholder="ค้นหาชื่อ รหัส หมวด หรือที่เก็บ" value="${esc(S.q)}">
+    ${canLoan() ? '<button id="btnScan" style="white-space:nowrap">สแกน QR</button>' : ""}</div>` +
+    (list.length ? `<div class="grid">${list.map(e => {
+      const a = Number(e.available_qty), t = Number(e.total_qty) || 1, ok = e.status === "ใช้งานได้" && a > 0;
+      const cls = a === 0 ? "zero" : a / t <= .25 ? "low" : "";
+      return `<div class="card eq"><div class="row"><div class="ico">${catIco(e.category)}</div>
+        <div class="grow"><b>${esc(e.name)}</b><div class="mute">${esc(e.equip_id)} · ${esc(e.location || "ไม่ระบุที่เก็บ")}</div></div></div>
+        <div><div class="meter ${cls}"><i style="width:${Math.min(100, a / t * 100)}%"></i></div>
+        <div class="mute" style="margin-top:.25rem">ว่าง ${a} จาก ${e.total_qty} ชิ้น</div></div>
+        <div class="foot"><div class="tags">${e.status !== "ใช้งานได้" ? `<span class="tag b">${esc(e.status)}</span>` : ""}
         ${e.risk_level === "สูง" ? '<span class="tag w">เสี่ยงสูง</span>' : ""}
-        ${String(e.requires_approval).toUpperCase() === "TRUE" ? '<span class="tag w">ต้องอนุมัติ</span>' : ""}</div>
-        ${canLoan() ? `<button data-add="${esc(e.equip_id)}" ${ok ? "" : "disabled"}>เพิ่ม</button>` : ""}</div>`;
-    }).join("") || '<div class="empty">ไม่พบอุปกรณ์ ลองเปลี่ยนคำค้นหา</div>');
+        ${String(e.requires_approval).toUpperCase() === "TRUE" ? '<span class="tag n">ต้องอนุมัติ</span>' : ""}</div>
+        ${canLoan() ? `<button data-add="${esc(e.equip_id)}" ${ok ? "" : "disabled"}>เพิ่มลงตะกร้า</button>` : ""}</div></div>`;
+    }).join("")}</div>` : '<div class="empty"><div class="ico">🔎</div>ไม่พบอุปกรณ์ ลองเปลี่ยนคำค้นหา</div>');
 }
 function vCart() {
   const ids = Object.keys(S.cart);
-  if (!ids.length) return '<div class="empty">ตะกร้าว่าง เลือกอุปกรณ์จากแท็บ "อุปกรณ์" หรือสแกน QR</div>';
+  if (!ids.length) return head("ตะกร้ายืม", "ตรวจรายการก่อนยืนยัน") + '<div class="empty"><div class="ico">🧺</div>ตะกร้ายังว่าง<br>เลือกอุปกรณ์จากแท็บ "อุปกรณ์" หรือสแกน QR</div>';
   const due = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10);
-  return ids.map(id => {
+  return head("ตะกร้ายืม", "ตรวจรายการก่อนยืนยัน") + `<div class="split"><div class="card">${ids.map(id => {
     const e = S.equip.find(x => x.equip_id == id) || {};
-    return `<div class="card row"><div class="grow"><b>${esc(e.name || id)}</b><br><span class="mute">ว่าง ${e.available_qty}</span></div>
-      <input class="qty" type="number" min="1" max="${e.available_qty}" value="${S.cart[id]}" data-qty="${esc(id)}">
+    return `<div class="line"><div class="ico">${catIco(e.category)}</div><div class="grow"><b>${esc(e.name || id)}</b><div class="mute">ว่าง ${e.available_qty} ชิ้น</div></div>
+      <input class="qty" type="number" min="1" max="${e.available_qty}" value="${S.cart[id]}" data-qty="${esc(id)}" aria-label="จำนวน">
       <button class="alt" data-del="${esc(id)}">ลบ</button></div>`;
-  }).join("") + `<div class="card"><label for="cg">ห้องเรียน / กลุ่ม</label><input id="cg" placeholder="เช่น ม.4/2 กลุ่ม 1-8">
+  }).join("")}</div>
+  <div class="card"><b>รายละเอียดการยืม</b><label for="cg">ห้องเรียน / กลุ่ม</label><input id="cg" placeholder="เช่น ม.4/2 กลุ่ม 1-8">
     <label for="sj">วิชา / การทดลอง</label><input id="sj">
     <label for="dd">กำหนดคืน</label><input id="dd" type="date" value="${due}">
-    <p><button id="btnLoan" style="width:100%">ยืนยันการยืม</button></p></div>`;
+    <p style="margin:1.2rem 0 0"><button id="btnLoan" style="width:100%;height:48px">ยืนยันการยืม</button></p></div></div>`;
 }
 function vLoans() {
-  if (!S.loans.length) return '<div class="empty">ไม่มีรายการที่ค้างอยู่</div>';
-  const today = new Date().toISOString().slice(0, 10);
-  return S.loans.map(l => {
-    const late = l.status !== "รออนุมัติ" && String(l.due_date).slice(0, 10) < today;
+  if (!S.loans.length) return head("รายการยืม", "ใบยืมที่ยังไม่คืนครบ") + '<div class="empty"><div class="ico">✅</div>ไม่มีรายการค้างอยู่ ทุกอย่างคืนครบแล้ว</div>';
+  return head("รายการยืม", "ใบยืมที่ยังไม่คืนครบ") + `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(340px,1fr))">` + S.loans.map(l => {
+    const late = isLate(l), pend = l.status === "รออนุมัติ";
     const items = l.items.map(i => {
       const left = i.qty_borrowed - i.qty_returned;
-      return `<div class="row" style="margin:.35rem 0"><div class="grow">${esc(i.name)} <span class="mute">ค้าง ${left}/${i.qty_borrowed}</span></div>
-        ${left > 0 && l.status !== "รออนุมัติ" ? `<input class="qty" type="number" min="0" max="${left}" value="${left}" data-rq="${l.loan_id}|${esc(i.equip_id)}">
-        <select data-rc="${l.loan_id}|${esc(i.equip_id)}" style="width:7.5rem"><option>ปกติ</option><option>มีรอยเล็กน้อย</option><option>ชำรุด</option><option>สูญหาย</option></select>` : ""}</div>`;
+      return `<div class="it"><div class="grow">${esc(i.name)}<div class="mute">ค้าง ${left} จาก ${i.qty_borrowed}</div></div>
+        ${left > 0 && !pend && canLoan() ? `<input class="qty" type="number" min="0" max="${left}" value="${left}" data-rq="${l.loan_id}|${esc(i.equip_id)}" aria-label="จำนวนที่คืน">
+        <select data-rc="${l.loan_id}|${esc(i.equip_id)}"><option>ปกติ</option><option>มีรอยเล็กน้อย</option><option>ชำรุด</option><option>สูญหาย</option></select>` : ""}</div>`;
     }).join("");
-    const canRet = canLoan() && l.status !== "รออนุมัติ";
-    const canApp = ["admin", "head"].includes(S.user.role) && l.status === "รออนุมัติ";
-    return `<div class="card"><div class="row"><div class="grow"><b>${esc(l.loan_id)}</b> · ${esc(l.borrower_name)}<br>
-      <span class="mute">${esc(l.class_group)} ${esc(l.subject)} · คืนภายใน ${String(l.due_date).slice(0, 10)}</span></div>
-      <span class="tag ${late ? "b" : l.status === "รออนุมัติ" ? "w" : ""}">${late ? "เกินกำหนด" : esc(l.status)}</span></div>${items}
-      ${canRet ? `<p><button data-ret="${l.loan_id}">บันทึกการคืน</button></p>` : ""}
-      ${canApp ? `<p class="row"><button data-app="${l.loan_id}">อนุมัติ</button><button class="bad" data-rej="${l.loan_id}">ไม่อนุมัติ</button></p>` : ""}</div>`;
-  }).join("");
+    return `<div class="card loan"><div class="head"><div class="grow"><b>${esc(l.loan_id)}</b><div class="mute">${esc(l.borrower_name)} · ${esc(l.class_group)} ${esc(l.subject)}</div>
+      <div class="mute">คืนภายใน ${String(l.due_date).slice(0, 10)}</div></div>
+      <span class="tag ${late ? "b" : pend ? "w" : "n"}">${late ? "เกินกำหนด" : esc(l.status)}</span></div>${items}
+      ${canLoan() && !pend ? `<p style="margin:.8rem 0 0"><button data-ret="${l.loan_id}" style="width:100%">บันทึกการคืน</button></p>` : ""}
+      ${["admin", "head"].includes(S.user.role) && pend ? `<div class="row" style="margin-top:.8rem"><button data-app="${l.loan_id}" class="grow">อนุมัติ</button><button class="bad grow" data-rej="${l.loan_id}">ไม่อนุมัติ</button></div>` : ""}</div>`;
+  }).join("") + "</div>";
 }
 function vAdmin() {
   const opt = (a, v) => a.map(x => `<option ${x === v ? "selected" : ""}>${x}</option>`).join("");
-  return `<div class="card"><b>เพิ่ม / แก้ไขอุปกรณ์</b><div class="mute">ใช้รหัสที่มีอยู่เพื่อแก้ไข จำนวนว่างจะปรับตามส่วนต่างอัตโนมัติ</div>
-    <label for="f_id">รหัสอุปกรณ์</label><input id="f_id" placeholder="เช่น EQ-001" list="ids">
+  return head("จัดการอุปกรณ์", "ใช้รหัสที่มีอยู่เพื่อแก้ไข จำนวนว่างจะปรับตามส่วนต่างอัตโนมัติ") + `<div class="card" style="max-width:680px"><div class="fgrid">
+    <div><label for="f_id">รหัสอุปกรณ์</label><input id="f_id" placeholder="เช่น EQ-001" list="ids"></div>
+    <div><label for="f_name">ชื่อ</label><input id="f_name"></div>
+    <div><label for="f_cat">หมวดหมู่</label><select id="f_cat">${opt(["เครื่องแก้ว", "กล้องจุลทรรศน์", "ชุดวงจรไฟฟ้า", "เครื่องชั่ง/เครื่องวัด", "เครื่องมือทั่วไป", "สารเคมี", "อื่น ๆ"])}</select></div>
+    <div><label for="f_loc">ที่เก็บ (ห้อง/ตู้/ชั้น)</label><input id="f_loc"></div>
+    <div><label for="f_tot">จำนวนทั้งหมด</label><input id="f_tot" type="number" min="0" value="1"></div>
+    <div><label for="f_st">สถานะ</label><select id="f_st">${opt(["ใช้งานได้", "ซ่อม", "ชำรุด", "จำหน่าย"])}</select></div>
+    <div><label for="f_rk">ระดับความเสี่ยง</label><select id="f_rk">${opt(["ต่ำ", "กลาง", "สูง"])}</select></div></div>
     <datalist id="ids">${S.equip.map(e => `<option value="${esc(e.equip_id)}">${esc(e.name)}</option>`).join("")}</datalist>
-    <label for="f_name">ชื่อ</label><input id="f_name">
-    <label for="f_cat">หมวดหมู่</label><select id="f_cat">${opt(["เครื่องแก้ว", "กล้องจุลทรรศน์", "ชุดวงจรไฟฟ้า", "เครื่องชั่ง/เครื่องวัด", "เครื่องมือทั่วไป", "สารเคมี", "อื่น ๆ"])}</select>
-    <label for="f_loc">ที่เก็บ (ห้อง/ตู้/ชั้น)</label><input id="f_loc">
-    <label for="f_tot">จำนวนทั้งหมด</label><input id="f_tot" type="number" min="0" value="1">
-    <label for="f_st">สถานะ</label><select id="f_st">${opt(["ใช้งานได้", "ซ่อม", "ชำรุด", "จำหน่าย"])}</select>
-    <label for="f_rk">ระดับความเสี่ยง</label><select id="f_rk">${opt(["ต่ำ", "กลาง", "สูง"])}</select>
-    <label class="row" style="color:inherit"><input type="checkbox" id="f_ap" style="width:auto"> ต้องได้รับอนุมัติก่อนยืม</label>
-    <p><button id="btnSave" style="width:100%">บันทึกอุปกรณ์</button></p></div>`;
+    <label class="chk"><input type="checkbox" id="f_ap"> ต้องได้รับอนุมัติก่อนยืม</label>
+    <p style="margin:1.3rem 0 0"><button id="btnSave" style="width:100%;height:48px">บันทึกอุปกรณ์</button></p></div>`;
 }
-
+ 
 // ===== เหตุการณ์ =====
 $("#view").addEventListener("input", e => {
   if (e.target.id === "q") { S.q = e.target.value; const p = e.target.selectionStart; render(); const q = $("#q"); q.focus(); q.setSelectionRange(p, p); }
@@ -218,7 +305,7 @@ $("#view").addEventListener("click", e => {
     await refresh(); S.tab = "admin"; render(); toast("บันทึกอุปกรณ์แล้ว");
   });
 });
-
+ 
 // ===== สแกน QR (QR ควรเก็บ "รหัสอุปกรณ์" เช่น EQ-001) =====
 let scanner;
 function scan() {
@@ -233,7 +320,7 @@ function scan() {
 }
 function stopScan() { $("#scan").hidden = true; if (scanner) scanner.stop().then(() => scanner.clear()).catch(() => {}); }
 $("#btnStop").onclick = stopScan;
-
+ 
 // ===== กลับเข้าเซสชันเดิมเมื่อรีเฟรช =====
 try { const s = JSON.parse(sessionStorage.getItem("sess")); if (s) { S.token = s.token; S.user = s.user; start(); } } catch (e) {}
 </script>
