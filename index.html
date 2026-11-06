@@ -32,7 +32,7 @@ label{display:block;font-size:.88rem;font-weight:500;color:var(--mute);margin:.9
 .tag{display:inline-flex;align-items:center;gap:.3rem;padding:.08rem .65rem;border-radius:99px;font-size:.8rem;font-weight:500;background:var(--ok2);color:var(--ok)}
 .tag.w{background:var(--wn2);color:var(--wn)}.tag.b{background:var(--bad2);color:var(--bad)}.tag.n{background:var(--ac2);color:var(--ac)}
 .qty{width:4.8rem;text-align:center;height:42px}
- 
+
 /* ---------- เข้าสู่ระบบ ---------- */
 #login{min-height:100vh;display:grid;align-items:center;gap:2rem;padding:1.5rem;max-width:1080px;margin:0 auto}
 .hero h1{font-size:clamp(1.9rem,4.6vw,3rem);line-height:1.2;max-width:15ch}
@@ -41,7 +41,7 @@ label{display:block;font-size:.88rem;font-weight:500;color:var(--mute);margin:.9
 .sign{padding:1.8rem}
 .sign h2{font-size:1.35rem}
 @media(min-width:900px){#login{grid-template-columns:1.15fr .85fr}}
- 
+
 /* ---------- โครงแอป ---------- */
 #app{display:block}
 aside{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;background:rgba(255,255,255,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:6}
@@ -66,7 +66,7 @@ main{max-width:1000px;margin:0 auto;padding:1.2rem 1rem 6.5rem}
   .me{border-top:1px solid var(--line);padding-top:1rem}.me .nm{flex:1}
   main{padding:1.8rem 2rem 3rem}
 }
- 
+
 /* ---------- เนื้อหา ---------- */
 .stats{display:flex;margin-bottom:1rem;padding:.9rem 0}
 .stats div{flex:1;padding:0 1.2rem;border-left:1px solid var(--line)}.stats div:first-child{border:0}
@@ -90,7 +90,7 @@ main{max-width:1000px;margin:0 auto;padding:1.2rem 1rem 6.5rem}
 .fgrid{display:grid;gap:0 1rem;grid-template-columns:1fr 1fr}@media(max-width:560px){.fgrid{grid-template-columns:1fr}}
 .empty{text-align:center;color:var(--mute);padding:3rem 1rem}.empty .ico{margin:0 auto .8rem;width:64px;height:64px;font-size:2rem}
 .chk{display:flex;align-items:center;gap:.6rem;margin-top:1rem;color:var(--ink);font-size:1rem}.chk input{width:20px;height:20px}
- 
+
 #toast{position:fixed;left:50%;bottom:5.5rem;transform:translateX(-50%);background:var(--ink);color:#fff;padding:.7rem 1.1rem;border-radius:12px;max-width:90vw;z-index:30;box-shadow:0 14px 30px -10px rgba(15,34,51,.5)}
 #toast.err{background:var(--bad)}
 @media(min-width:900px){#toast{bottom:1.6rem}}
@@ -100,7 +100,7 @@ main{max-width:1000px;margin:0 auto;padding:1.2rem 1rem 6.5rem}
 </style>
 </head>
 <body>
- 
+
 <section id="login">
   <div class="hero">
     <svg viewBox="0 0 120 120" fill="none" aria-hidden="true">
@@ -118,7 +118,7 @@ main{max-width:1000px;margin:0 auto;padding:1.2rem 1rem 6.5rem}
     <p style="margin:1.3rem 0 0"><button id="btnLogin" style="width:100%;height:48px">เข้าสู่ระบบ</button></p>
   </div>
 </section>
- 
+
 <div id="app" hidden>
   <aside>
     <div class="brand"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/></svg></div>
@@ -128,15 +128,15 @@ main{max-width:1000px;margin:0 auto;padding:1.2rem 1rem 6.5rem}
   </aside>
   <main id="view"></main>
 </div>
- 
+
 <div id="scan" hidden><b>ส่องกล้องไปที่ QR ของอุปกรณ์</b><div id="reader"></div><button class="alt" id="btnStop">ปิดกล้อง</button></div>
 <div id="toast" hidden></div>
- 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script>
 // ===== ตั้งค่า: วาง URL ของ Web App ที่ได้จากการ Deploy Apps Script =====
 const API_URL = "https://script.google.com/macros/s/AKfycby7ePany_46teBC_QVXftLWvaMoVhni-uq5Q1m2A6oAoEYcoMGixxpIGQ__hOc3JdSUFA/exec";
- 
+
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const S = { token: null, user: null, equip: [], loans: [], cart: {}, tab: "equip", q: "" };
@@ -150,7 +150,7 @@ const ICON = {
   admin: svg('<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>')
 };
 const catIco = c => ({ "เครื่องแก้ว": "🧪", "กล้องจุลทรรศน์": "🔬", "ชุดวงจรไฟฟ้า": "⚡", "เครื่องชั่ง/เครื่องวัด": "⚖️", "เครื่องมือทั่วไป": "🧰", "สารเคมี": "⚗️" }[c] || "🔹");
- 
+
 async function api(action, payload = {}) {
   const res = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify({ action, token: S.token, payload }) });
@@ -163,7 +163,7 @@ function toast(msg, err) {
   clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3500);
 }
 async function run(fn) { try { await fn(); } catch (e) { toast(e.message, true); } }
- 
+
 // ===== เข้าสู่ระบบ =====
 $("#btnLogin").onclick = () => run(async () => {
   const d = await api("login", { user_id: $("#uid").value, pin: $("#pin").value });
@@ -174,7 +174,7 @@ $("#btnLogin").onclick = () => run(async () => {
 $("#pin").onkeydown = e => { if (e.key === "Enter") $("#btnLogin").click(); };
 function logout() { sessionStorage.removeItem("sess"); location.reload(); }
 $("#btnOut").onclick = logout;
- 
+
 async function start() {
   $("#login").hidden = true; $("#app").hidden = false;
   $("#av").textContent = (S.user.name || "?").trim().charAt(0);
@@ -187,7 +187,7 @@ async function refresh() {
     render();
   });
 }
- 
+
 // ===== แสดงผล =====
 const head = (t, s) => `<div class="page-h"><h2>${t}</h2><div class="mute">${s}</div></div>`;
 function render() {
@@ -201,7 +201,7 @@ function render() {
   $("#view").innerHTML = ({ equip: vEquip, cart: vCart, loans: vLoans, admin: vAdmin })[S.tab]();
 }
 $("#tabs").onclick = e => { const b = e.target.closest("[data-tab]"); if (b) { S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); } };
- 
+
 const isLate = l => l.status !== "รออนุมัติ" && String(l.due_date).slice(0, 10) < new Date().toISOString().slice(0, 10);
 function vEquip() {
   const q = S.q.toLowerCase();
@@ -272,7 +272,7 @@ function vAdmin() {
     <label class="chk"><input type="checkbox" id="f_ap"> ต้องได้รับอนุมัติก่อนยืม</label>
     <p style="margin:1.3rem 0 0"><button id="btnSave" style="width:100%;height:48px">บันทึกอุปกรณ์</button></p></div>`;
 }
- 
+
 // ===== เหตุการณ์ =====
 $("#view").addEventListener("input", e => {
   if (e.target.id === "q") { S.q = e.target.value; const p = e.target.selectionStart; render(); const q = $("#q"); q.focus(); q.setSelectionRange(p, p); }
@@ -305,7 +305,7 @@ $("#view").addEventListener("click", e => {
     await refresh(); S.tab = "admin"; render(); toast("บันทึกอุปกรณ์แล้ว");
   });
 });
- 
+
 // ===== สแกน QR (QR ควรเก็บ "รหัสอุปกรณ์" เช่น EQ-001) =====
 let scanner;
 function scan() {
@@ -320,7 +320,7 @@ function scan() {
 }
 function stopScan() { $("#scan").hidden = true; if (scanner) scanner.stop().then(() => scanner.clear()).catch(() => {}); }
 $("#btnStop").onclick = stopScan;
- 
+
 // ===== กลับเข้าเซสชันเดิมเมื่อรีเฟรช =====
 try { const s = JSON.parse(sessionStorage.getItem("sess")); if (s) { S.token = s.token; S.user = s.user; start(); } } catch (e) {}
 </script>
