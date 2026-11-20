@@ -3,310 +3,597 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SciLab Equip | ระบบยืม-คืนอุปกรณ์วิทยาศาสตร์</title>
+  <title>Science Lab | ระบบยืม-คืนอุปกรณ์วิทยาศาสตร์</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Prompt', sans-serif; background-color: #f1f5f9; }
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #f4f6fb;
+      overflow-x: hidden;
+    }
     .hidden { display: none !important; }
+
+    /* Sidebar Gradient ตามต้นแบบ */
+    .sidebar-gradient {
+      background: linear-gradient(180deg, #191654 0%, #24124d 52%, #132a5e 100%);
+    }
+
+    /* ปุ่มเมนู Active เรืองแสงสีม่วง-น้ำเงิน */
+    .nav-item-active {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      box-shadow: 0 10px 25px -4px rgba(99, 102, 241, 0.55);
+      color: #ffffff !important;
+    }
+
+    /* โลโก้ขวดทดลองเรืองแสงสีชมพู-ส้ม */
+    .logo-glow {
+      background: linear-gradient(135deg, #ff5e7e 0%, #ff9966 100%);
+      box-shadow: 0 8px 20px -3px rgba(255, 94, 126, 0.6);
+    }
+
+    /* พื้นหลังหน้า Login แบบ Vibrant Glassmorphism */
+    .auth-bg {
+      background: radial-gradient(circle at 15% 20%, #4f46e5 0%, transparent 45%),
+                  radial-gradient(circle at 85% 80%, #ec4899 0%, transparent 45%),
+                  radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 100%);
+    }
+
+    /* อนิเมชันการ์ตูนขวดยาขยับ & ฟองอากาศลอย */
+    @keyframes floatFlask {
+      0%, 100% { transform: translateY(0px) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+    @keyframes bubbleRise1 {
+      0% { transform: translateY(0) scale(0.6); opacity: 0; }
+      30% { opacity: 1; }
+      100% { transform: translateY(-48px) scale(1.2); opacity: 0; }
+    }
+    @keyframes bubbleRise2 {
+      0% { transform: translateY(0) scale(0.5); opacity: 0; }
+      40% { opacity: 0.9; }
+      100% { transform: translateY(-60px) scale(1.1); opacity: 0; }
+    }
+    @keyframes liquidSway {
+      0%, 100% { transform: skewX(0deg) scaleY(1); }
+      50% { transform: skewX(-4deg) scaleY(1.04); }
+    }
+    @keyframes spinOrbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .animate-flask { animation: floatFlask 3.6s ease-in-out infinite; transform-origin: center; }
+    .animate-liquid { animation: liquidSway 2.8s ease-in-out infinite; transform-origin: bottom; }
+    .bubble-1 { animation: bubbleRise1 2.2s infinite ease-in; }
+    .bubble-2 { animation: bubbleRise2 2.8s infinite ease-in 0.7s; }
+    .bubble-3 { animation: bubbleRise1 2.5s infinite ease-in 1.4s; }
+    .animate-orbit { animation: spinOrbit 12s linear infinite; transform-origin: center; }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
   </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col">
+<body class="text-slate-800 antialiased">
 
-  <!-- ==================== NAVBAR ==================== -->
-  <nav class="bg-indigo-700 text-white shadow-md sticky top-0 z-40">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="flex items-center gap-2.5">
-        <span class="text-2xl">🔬</span>
-        <div>
-          <h1 class="font-bold text-lg leading-tight">SciLab Equip</h1>
-          <p class="text-xs text-indigo-200">ระบบยืม-คืนอุปกรณ์กลุ่มสาระวิทยาศาสตร์</p>
+  <!-- ======================================================================= -->
+  <!-- 1. หน้าเข้าสู่ระบบ & ลงทะเบียน (AUTH SCREEN WITH ANIMATED POTION ART)    -->
+  <!-- ======================================================================= -->
+  <div id="authSection" class="auth-bg min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-12">
+
+      <!-- ฝั่งซ้าย: การ์ตูนขวดยาเคลื่อนไหว & แนะนำระบบ -->
+      <div class="md:col-span-5 p-8 text-white flex flex-col justify-between bg-gradient-to-br from-indigo-600/40 via-purple-600/30 to-pink-600/40 relative overflow-hidden">
+        <div class="flex items-center gap-3 z-10">
+          <div class="logo-glow w-11 h-11 rounded-2xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6m-4 0v5.172a2 2 0 01-.586 1.414l-4.828 4.828A2 2 0 005 15.828V18a3 3 0 003 3h8a3 3 0 003-3v-2.172a2 2 0 00-.586-1.414l-4.828-4.828A2 2 0 0113 8.172V3"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="font-bold text-xl tracking-wide">Science Lab</h1>
+            <p class="text-xs text-indigo-200">ระบบยืม-คืนอุปกรณ์วิทยาศาสตร์</p>
+          </div>
+        </div>
+
+        <!-- การ์ตูน SVG ขวดน้ำยาวิทยาศาสตร์ขยับได้ + ฟองอากาศปุดๆ -->
+        <div class="my-6 flex flex-col items-center justify-center z-10">
+          <svg class="w-48 h-48 animate-flask drop-shadow-[0_15px_25px_rgba(236,72,153,0.45)]" viewBox="0 0 200 200">
+            <!-- วงโคจรอะตอมหมุนรอบขวด -->
+            <g class="animate-orbit" opacity="0.45">
+              <ellipse cx="100" cy="115" rx="78" ry="26" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6 4"/>
+              <circle cx="178" cy="115" r="5" fill="#38bdf8"/>
+              <circle cx="22" cy="115" r="4" fill="#f472b6"/>
+            </g>
+
+            <!-- ฟองอากาศลอยขึ้นจากปากขวด -->
+            <circle class="bubble-1" cx="95" cy="45" r="5" fill="#67e8f9"/>
+            <circle class="bubble-2" cx="108" cy="40" r="7" fill="#f472b6"/>
+            <circle class="bubble-3" cx="100" cy="50" r="4" fill="#fde047"/>
+
+            <!-- ตัวขวดรูปชมพู่ (Erlenmeyer Flask) -->
+            <path d="M82 52 H118 V62 H112 V88 L148 152 C153 161 146 172 136 172 H64 C54 172 47 161 52 152 L88 88 V62 H82 Z"
+                  fill="rgba(255,255,255,0.18)" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
+
+            <!-- น้ำยาเรืองแสงสีชมพู-ม่วง-ฟ้าขยับได้ -->
+            <g class="animate-liquid">
+              <path d="M63 142 Q85 134 100 142 T137 142 L144 154 C147 160 142 167 135 167 H65 C58 167 53 160 56 154 Z"
+                    fill="url(#potionGrad)"/>
+              <!-- ฟองในน้ำยา -->
+              <circle cx="82" cy="155" r="3.5" fill="#ffffff" opacity="0.7"/>
+              <circle cx="115" cy="152" r="4.5" fill="#ffffff" opacity="0.6"/>
+              <circle cx="98" cy="160" r="2.5" fill="#fde047" opacity="0.9"/>
+            </g>
+
+            <!-- ขีดวัดปริมาตร -->
+            <line x1="88" y1="115" x2="98" y2="115" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+            <line x1="83" y1="128" x2="95" y2="128" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+
+            <defs>
+              <linearGradient id="potionGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ec4899"/>
+                <stop offset="50%" stop-color="#8b5cf6"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <p class="text-center text-sm font-medium text-indigo-100 mt-1">คลังอุปกรณ์วิทยาศาสตร์อัจฉริยะ</p>
+          <p class="text-center text-xs text-indigo-200/80">โปร่งใส ตรวจสอบได้ด้วยภาพถ่ายก่อน-หลังใช้งาน</p>
+        </div>
+
+        <div class="bg-white/10 rounded-2xl p-3.5 text-xs space-y-1 border border-white/15 z-10">
+          <p class="font-semibold text-amber-300">✨ บัญชีทดลองใช้งาน (รหัส: 1234)</p>
+          <p>• นักเรียน: <span class="font-mono bg-black/25 px-1.5 py-0.5 rounded">student01</span></p>
+          <p>• คุณครู: <span class="font-mono bg-black/25 px-1.5 py-0.5 rounded">teacher01</span></p>
+          <p>• ผู้ดูแลระบบ: <span class="font-mono bg-black/25 px-1.5 py-0.5 rounded">admin01</span></p>
         </div>
       </div>
-      <div id="userNav" class="hidden flex items-center gap-3">
-        <div class="text-right hidden sm:block">
-          <p id="navUserName" class="text-sm font-semibold"></p>
-          <span id="navUserRole" class="text-xs bg-indigo-900 px-2 py-0.5 rounded-full text-indigo-200"></span>
+
+      <!-- ฝั่งขวา: ฟอร์มเข้าสู่ระบบ & ลงทะเบียน (RBAC) -->
+      <div class="md:col-span-7 bg-white p-7 sm:p-9 flex flex-col justify-center">
+        <div class="flex gap-2 p-1 bg-slate-100 rounded-2xl mb-6">
+          <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-white text-indigo-600 shadow-sm transition">
+            เข้าสู่ระบบ
+          </button>
+          <button id="tabRegBtn" onclick="switchAuthTab('register')" class="flex-1 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-700 transition">
+            ลงทะเบียนใหม่
+          </button>
         </div>
-        <button onclick="logout()" class="bg-rose-500 hover:bg-rose-600 text-white text-xs sm:text-sm px-3 py-1.5 rounded-lg font-medium transition">
-          ออกจากระบบ
-        </button>
-      </div>
-    </div>
-  </nav>
 
-  <!-- ==================== 1. หน้าเข้าสู่ระบบ & ลงทะเบียน (RBAC) ==================== -->
-  <main id="authSection" class="flex-grow flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
-      <!-- แถบสลับ Login / Register -->
-      <div class="grid grid-cols-2 border-b bg-slate-50">
-        <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="py-3.5 font-semibold text-indigo-600 border-b-2 border-indigo-600 bg-white transition">
-          เข้าสู่ระบบ
-        </button>
-        <button id="tabRegBtn" onclick="switchAuthTab('register')" class="py-3.5 font-semibold text-slate-500 hover:text-slate-700 transition">
-          ลงทะเบียนใหม่
-        </button>
-      </div>
-
-      <div class="p-6">
         <!-- ฟอร์มเข้าสู่ระบบ -->
         <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">รหัสนักเรียน / ชื่อผู้ใช้ / อีเมล</label>
-            <input type="text" id="loginUser" required placeholder="เช่น student01, teacher01, admin01"
-              class="w-full border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">รหัสนักเรียน / ชื่อผู้ใช้ / อีเมล</label>
+            <input type="text" id="loginUser" required placeholder="กรอกชื่อผู้ใช้ของคุณ เช่น admin01"
+              class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
           </div>
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">รหัสผ่าน</label>
-            <input type="password" id="loginPass" required placeholder="••••"
-              class="w-full border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1.5">รหัสผ่าน</label>
+            <input type="password" id="loginPass" required placeholder="••••••••"
+              class="w-full border border-slate-200 bg-slate-50 focus:bg-white rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
           </div>
-          <button type="submit" id="btnLogin" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl shadow transition">
-            เข้าสู่ระบบ
+          <button type="submit" id="btnLogin" class="w-full py-3.5 rounded-2xl text-white font-semibold text-sm bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 hover:opacity-95 shadow-lg shadow-indigo-500/30 transition">
+            เข้าสู่ระบบห้องปฏิบัติการ 🚀
           </button>
-
-          <!-- กล่องแนะนำบัญชีทดสอบ -->
-          <div class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-1">
-            <p class="font-semibold text-slate-700">💡 บัญชีทดสอบเริ่มต้น (รหัสผ่าน: <code class="bg-slate-200 px-1 rounded">1234</code> ทุกบัญชี)</p>
-            <p>• นักเรียน: <code class="text-indigo-600 font-semibold">student01</code></p>
-            <p>• คุณครู: <code class="text-purple-600 font-semibold">teacher01</code></p>
-            <p>• ครูผู้ดูแลอุปกรณ์: <code class="text-amber-600 font-semibold">admin01</code></p>
-          </div>
         </form>
 
-        <!-- ฟอร์มลงทะเบียน (RBAC) -->
+        <!-- ฟอร์มลงทะเบียน RBAC -->
         <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3.5 hidden">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">เลือกบทบาทผู้ใช้งาน (RBAC Role)</label>
-            <select id="regRole" onchange="togglePasscodeField()" class="w-full border border-slate-300 rounded-xl p-2.5 bg-indigo-50/50 font-medium focus:ring-2 focus:ring-indigo-500">
-              <option value="Student">👨‍🎓 1. นักเรียน (ยืมอุปกรณ์ + บันทึกรูปก่อน-หลังใช้)</option>
-              <option value="Teacher">👩‍🏫 2. คุณครู (ยืม + เลือกวันยืม-คืนอิสระ + ประวัติทั้งหมด)</option>
-              <option value="Admin">🥼 3. ครูผู้ดูแลอุปกรณ์ (อนุมัติ + ตรวจรับคืน + จัดการคลัง)</option>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">เลือกสิทธิ์ผู้ใช้งาน (RBAC Role)</label>
+            <select id="regRole" onchange="togglePasscodeField()" class="w-full border border-indigo-200 bg-indigo-50/60 rounded-2xl px-4 py-2.5 text-sm font-medium text-indigo-900 focus:ring-2 focus:ring-indigo-500">
+              <option value="Student">👨‍🎓 นักเรียน (ยืมอุปกรณ์ + บันทึกรูปก่อน-หลังใช้)</option>
+              <option value="Teacher">👩‍🏫 คุณครู (ยืม + เลือกวันยืม-คืนอิสระ + ประวัติทั้งหมด)</option>
+              <option value="Admin">🥼 ผู้ดูแลระบบ / ครูดูแลแล็บ (อนุมัติ + ตรวจสอบ + จัดการ)</option>
             </select>
           </div>
 
-          <!-- ช่องรหัสยืนยันสิทธิ์สำหรับ Teacher / Admin -->
-          <div id="passcodeBox" class="hidden bg-amber-50 p-3 rounded-xl border border-amber-300">
-            <label class="block text-xs font-bold text-amber-800 mb-1">🔑 รหัสยืนยันสิทธิ์เฉพาะคุณครู / ผู้ดูแลอุปกรณ์</label>
-            <input type="password" id="regPasscode" placeholder="กรอกรหัสยืนยันสิทธิ์"
-              class="w-full border border-amber-400 rounded-lg p-2 text-sm bg-white">
-            <p class="text-[11px] text-amber-700 mt-1">*รหัสเริ่มต้น: ครูใช้ <b>TEACH2026</b> / ผู้ดูแลใช้ <b>ADMIN2026</b></p>
+          <div id="passcodeBox" class="hidden bg-amber-50 p-3 rounded-2xl border border-amber-300">
+            <label class="block text-xs font-bold text-amber-800 mb-1">🔑 รหัสยืนยันสิทธิ์ (เฉพาะคุณครู / ผู้ดูแลระบบ)</label>
+            <input type="password" id="regPasscode" placeholder="กรอกรหัสลับจากกลุ่มสาระฯ"
+              class="w-full border border-amber-400 rounded-xl px-3 py-2 text-sm bg-white">
+            <p class="text-[11px] text-amber-700 mt-1">*รหัสเริ่มต้น: คุณครูใช้ <b>TEACH2026</b> / ผู้ดูแลใช้ <b>ADMIN2026</b></p>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">ชื่อ - นามสกุล</label>
-            <input type="text" id="regName" required placeholder="เช่น นายกิตติ วิทยาศึกษา" class="w-full border border-slate-300 rounded-xl p-2.5">
+            <label class="block text-xs font-semibold text-slate-600 mb-1">ชื่อ - นามสกุล</label>
+            <input type="text" id="regName" required placeholder="เช่น นายกิตติ วิทยาศึกษา" class="w-full border border-slate-200 rounded-2xl px-4 py-2.5 text-sm">
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">รหัสนักเรียน / ชื่อผู้ใช้</label>
-              <input type="text" id="regUser" required placeholder="ใช้ล็อกอิน" class="w-full border border-slate-300 rounded-xl p-2.5">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">รหัสนักเรียน / ชื่อผู้ใช้</label>
+              <input type="text" id="regUser" required placeholder="ใช้เข้าสู่ระบบ" class="w-full border border-slate-200 rounded-2xl px-4 py-2.5 text-sm">
             </div>
             <div>
-              <label class="block text-sm font-medium text-slate-700 mb-1">ชั้นเรียน / กลุ่มสาระ</label>
-              <input type="text" id="regClass" required placeholder="เช่น ม.4/2 หรือ เคมี" class="w-full border border-slate-300 rounded-xl p-2.5">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">ห้องเรียน / กลุ่มสาระ</label>
+              <input type="text" id="regClass" required placeholder="เช่น ม.5/1 หรือ เคมี" class="w-full border border-slate-200 rounded-2xl px-4 py-2.5 text-sm">
             </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">ตั้งรหัสผ่าน</label>
-            <input type="password" id="regPass" required placeholder="ตั้งรหัสผ่านสำหรับเข้าสู่ระบบ" class="w-full border border-slate-300 rounded-xl p-2.5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">ตั้งรหัสผ่าน</label>
+              <input type="password" id="regPass" required placeholder="รหัสผ่าน" class="w-full border border-slate-200 rounded-2xl px-4 py-2.5 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">ตั้งรหัส PIN 4 หลัก</label>
+              <input type="text" id="regPin" maxlength="4" pattern="\d{4}" required placeholder="เช่น 1234" class="w-full border border-slate-200 rounded-2xl px-4 py-2.5 text-sm">
+            </div>
           </div>
 
-          <button type="submit" id="btnRegister" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl shadow transition">
-            ยืนยันการลงทะเบียน
+          <button type="submit" id="btnRegister" class="w-full py-3 rounded-2xl text-white font-semibold text-sm bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 shadow-lg shadow-emerald-500/30 transition">
+            สร้างบัญชีผู้ใช้งาน ✨
           </button>
         </form>
       </div>
     </div>
-  </main>
+  </div>
 
-  <!-- ==================== 2. หน้าหลักหลังเข้าสู่ระบบ (RBAC DASHBOARD) ==================== -->
-  <main id="dashboardSection" class="max-w-6xl w-full mx-auto px-4 py-6 hidden space-y-6">
+  <!-- ======================================================================= -->
+  <!-- 2. หน้าหลักหลังเข้าสู่ระบบ (MODERN SIDEBAR + WORKSPACE)                 -->
+  <!-- ======================================================================= -->
+  <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row">
 
-    <!-- แถบเมนูนำทางตามสิทธิ์ -->
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl shadow-sm border">
-      <div class="flex flex-wrap gap-2">
-        <button id="menuCatalog" onclick="showView('catalogView')" class="px-4 py-2 rounded-xl font-medium text-sm bg-indigo-600 text-white transition">
-          🔍 ค้นหาและยืมอุปกรณ์
-        </button>
-        <button id="menuMyLogs" onclick="showView('myLogsView')" class="px-4 py-2 rounded-xl font-medium text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-          📋 รายการยืม-คืนของฉัน
-        </button>
-        <button id="menuAdmin" onclick="showView('adminView')" class="hidden px-4 py-2 rounded-xl font-medium text-sm bg-amber-600 text-white hover:bg-amber-700 transition">
-          🛡️ ศูนย์อนุมัติและตรวจรับ (Admin)
-        </button>
+    <!-- Mobile Top Header -->
+    <div class="md:hidden sidebar-gradient text-white px-4 py-3 flex justify-between items-center sticky top-0 z-40 shadow-md">
+      <div class="flex items-center gap-2.5">
+        <div class="logo-glow w-9 h-9 rounded-xl flex items-center justify-center">
+          <span class="text-lg">🧪</span>
+        </div>
+        <div>
+          <p class="font-bold text-sm leading-none">Science Lab</p>
+          <p class="text-[11px] text-indigo-200">ยืม-คืนอุปกรณ์</p>
+        </div>
       </div>
-      <button onclick="loadAllData()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-xl">
-        🔄 รีเฟรชข้อมูล
+      <button onclick="toggleMobileSidebar()" class="p-2 rounded-xl bg-white/10 text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
       </button>
     </div>
 
-    <!-- ==================== VIEW 1: ค้นหาและเลือกอุปกรณ์ (Student & Teacher) ==================== -->
-    <section id="catalogView" class="space-y-4">
-      <div class="bg-white p-4 rounded-2xl shadow-sm border flex flex-col md:flex-row gap-3">
-        <input type="text" id="searchInput" onkeyup="filterEquipment()" placeholder="🔍 พิมพ์ชื่ออุปกรณ์วิทยาศาสตร์ที่ต้องการค้นหา..."
-          class="flex-grow border border-slate-300 rounded-xl p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-        <select id="categoryFilter" onchange="filterEquipment()" class="border border-slate-300 rounded-xl p-2.5 bg-white">
-          <option value="ALL">ทุกสาขาวิชา (ฟิสิกส์ / เคมี / ชีววิทยา)</option>
-          <option value="ฟิสิกส์">⚡ ฟิสิกส์</option>
-          <option value="เคมี">🧪 เคมี</option>
-          <option value="ชีววิทยา">🧬 ชีววิทยา</option>
-          <option value="ทั่วไป">🔭 วิทยาศาสตร์ทั่วไป</option>
-        </select>
+    <!-- SIDEBAR (ถอดแบบจากภาพต้นแบบ พร้อมการ์ตูนขวดยาขยับได้) -->
+    <aside id="appSidebar" class="sidebar-gradient text-white w-72 shrink-0 flex flex-col justify-between p-5 fixed md:sticky top-0 left-0 h-screen z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 shadow-2xl">
+      <div>
+        <!-- โลโก้ด้านบน + ขวดยาขยับได้ -->
+        <div class="flex items-center justify-between mb-9 pt-1">
+          <div class="flex items-center gap-3.5">
+            <div class="logo-glow w-12 h-12 rounded-2xl flex items-center justify-center relative">
+              <!-- Mini Animated Flask SVG -->
+              <svg class="w-7 h-7 animate-flask" viewBox="0 0 36 36">
+                <circle class="bubble-1" cx="17" cy="9" r="2" fill="#fde047"/>
+                <circle class="bubble-2" cx="21" cy="7" r="1.5" fill="#67e8f9"/>
+                <path d="M14 7 H22 M16 7 V13 L9 25 C8 27 9.5 29 12 29 H24 C26.5 29 28 27 27 25 L20 13 V7"
+                      fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M11 23 Q18 20 25 23 L26.5 25.5 C27 27 26 28.5 24 28.5 H12 C10 28.5 9 27 9.5 25.5 Z"
+                      fill="#ffffff" opacity="0.85"/>
+              </svg>
+            </div>
+            <div>
+              <h1 class="font-bold text-lg tracking-wide leading-tight">Science Lab</h1>
+              <p class="text-xs text-indigo-200/80">ยืม-คืนอุปกรณ์</p>
+            </div>
+          </div>
+          <button onclick="toggleMobileSidebar()" class="md:hidden text-indigo-200 hover:text-white text-xl">&times;</button>
+        </div>
+
+        <!-- 5 เมนูหลักตามภาพ -->
+        <nav class="space-y-2.5">
+          <!-- 1. อุปกรณ์ -->
+          <button id="nav-equipmentView" onclick="switchView('equipmentView')"
+            class="nav-btn nav-item-active w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-indigo-100/80 hover:bg-white/10 hover:text-white font-medium text-sm transition">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6m-4 0v5.172a2 2 0 01-.586 1.414l-4.828 4.828A2 2 0 005 15.828V18a3 3 0 003 3h8a3 3 0 003-3v-2.172a2 2 0 00-.586-1.414l-4.828-4.828A2 2 0 0113 8.172V3"/>
+            </svg>
+            <span>อุปกรณ์</span>
+          </button>
+
+          <!-- 2. ตะกร้า -->
+          <button id="nav-cartView" onclick="switchView('cartView')"
+            class="nav-btn w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-indigo-100/80 hover:bg-white/10 hover:text-white font-medium text-sm transition">
+            <div class="flex items-center gap-4">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+              <span>ตะกร้า</span>
+            </div>
+            <span id="cartBadge" class="hidden bg-pink-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">0</span>
+          </button>
+
+          <!-- 3. ตรวจสอบ (Admin: อนุมัติ & ตรวจรับคืน / User: ส่งคืน & ติดตามสถานะ) -->
+          <button id="nav-inspectView" onclick="switchView('inspectView')"
+            class="nav-btn w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-indigo-100/80 hover:bg-white/10 hover:text-white font-medium text-sm transition">
+            <div class="flex items-center gap-4">
+              <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+              </svg>
+              <span>ตรวจสอบ</span>
+            </div>
+            <span id="inspectBadge" class="hidden bg-amber-400 text-slate-900 text-xs font-bold px-2 py-0.5 rounded-full shadow">0</span>
+          </button>
+
+          <!-- 4. ประวัติ -->
+          <button id="nav-historyView" onclick="switchView('historyView')"
+            class="nav-btn w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-indigo-100/80 hover:bg-white/10 hover:text-white font-medium text-sm transition">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span>ประวัติ</span>
+          </button>
+
+          <!-- 5. จัดการ (แสดงเฉพาะผู้ดูแลระบบ Admin) -->
+          <button id="nav-manageView" onclick="switchView('manageView')"
+            class="nav-btn hidden w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-indigo-100/80 hover:bg-white/10 hover:text-white font-medium text-sm transition">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span>จัดการ</span>
+          </button>
+        </nav>
       </div>
 
-      <div id="equipmentGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    </section>
-
-    <!-- ==================== VIEW 2: รายการยืม-คืน และประวัติ (Student & Teacher) ==================== -->
-    <section id="myLogsView" class="hidden space-y-4">
-      <!-- แผงสรุปสถิติและตัวกรองประวัติ (แสดงเด่นชัดสำหรับสิทธิ์คุณครู) -->
-      <div id="teacherHistoryHeader" class="hidden bg-purple-50 border border-purple-200 p-4 rounded-2xl space-y-3">
-        <div class="flex flex-wrap justify-between items-center gap-2">
-          <div>
-            <h2 class="font-bold text-purple-900">📚 ประวัติการยืมอุปกรณ์ทั้งหมดของคุณครู</h2>
-            <p class="text-xs text-purple-700">แสดงบันทึกการยืม-คืน รูปถ่ายก่อนและหลังใช้งาน และผลการตรวจรับทุกครั้ง</p>
+      <!-- แถบโปรไฟล์ด้านล่าง + ปุ่ม PIN และ ออก -->
+      <div class="pt-4 border-t border-white/15 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-3 min-w-0">
+          <div id="sidebarAvatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center font-bold text-white shadow-md shrink-0">
+            ผ
           </div>
-          <select id="logStatusFilter" onchange="renderMyLogs()" class="border border-purple-300 rounded-xl p-2 text-sm bg-white">
-            <option value="ALL">แสดงสถานะทั้งหมด</option>
+          <div class="min-w-0">
+            <p id="sidebarUserName" class="text-sm font-semibold text-white truncate">ผู้ดูแลระบบ</p>
+            <p id="sidebarUserRole" class="text-[11px] text-indigo-200/80 truncate">ผู้ดูแลระบบ</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="openPinModal()" title="ล็อกหน้าจอ / สลับผู้ใช้ด้วย PIN" class="text-xs font-bold text-indigo-200 hover:text-white bg-white/10 hover:bg-white/20 px-2.5 py-1.5 rounded-lg transition">
+            PIN
+          </button>
+          <button onclick="logout()" class="text-xs font-semibold text-rose-300 hover:text-white hover:bg-rose-500/30 px-2 py-1.5 rounded-lg transition">
+            ออก
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===================================================================== -->
+    <!-- พื้นที่ทำงานหลัก (MAIN CONTENT WORKSPACE)                             -->
+    <!-- ===================================================================== -->
+    <main class="flex-1 p-5 md:p-8 max-w-7xl mx-auto w-full space-y-6">
+
+      <!-- Banner ด้านบนพร้อมการ์ตูนขวดยาขยับได้ -->
+      <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 rounded-3xl p-6 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden">
+        <div class="z-10 space-y-1">
+          <span id="roleTagBanner" class="inline-block text-xs font-semibold bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+            ยินดีต้อนรับสู่ห้องปฏิบัติการวิทยาศาสตร์
+          </span>
+          <h2 id="pageHeaderTitle" class="text-2xl font-bold tracking-tight">คลังอุปกรณ์วิทยาศาสตร์</h2>
+          <p id="pageHeaderDesc" class="text-xs sm:text-sm text-indigo-100">เลือกอุปกรณ์ที่ต้องการใส่ตะกร้า พร้อมบันทึกรูปถ่ายก่อนและหลังใช้งานทุกครั้ง</p>
+        </div>
+
+        <!-- การ์ตูนขวดทดลอง 3 ขวดขยับได้ด้านขวาของแบนเนอร์ -->
+        <div class="flex items-center gap-3 z-10 shrink-0">
+          <svg class="w-24 h-24 animate-flask" viewBox="0 0 120 120">
+            <circle class="bubble-1" cx="55" cy="25" r="3.5" fill="#fde047"/>
+            <circle class="bubble-2" cx="66" cy="20" r="4.5" fill="#67e8f9"/>
+            <!-- ขวดทรงกลม -->
+            <circle cx="60" cy="76" r="30" fill="rgba(255,255,255,0.2)" stroke="#ffffff" stroke-width="3"/>
+            <rect x="52" y="32" width="16" height="18" rx="3" fill="rgba(255,255,255,0.25)" stroke="#ffffff" stroke-width="3"/>
+            <g class="animate-liquid">
+              <path d="M33 78 Q48 72 60 78 T87 78 A27 27 0 0 1 33 78 Z" fill="#34d399"/>
+              <circle cx="50" cy="88" r="3" fill="#ffffff" opacity="0.8"/>
+              <circle cx="68" cy="85" r="2.5" fill="#ffffff" opacity="0.8"/>
+            </g>
+          </svg>
+          <button onclick="loadAllData()" class="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-4 py-2.5 rounded-2xl text-xs font-semibold transition flex items-center gap-1.5">
+            <span>🔄</span> รีเฟรช
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================== VIEW 1: อุปกรณ์ (EQUIPMENT) ==================== -->
+      <section id="equipmentView" class="space-y-5">
+        <!-- แถบค้นหาและหมวดหมู่สีสันสดใส -->
+        <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 flex flex-col lg:flex-row gap-3 items-center justify-between">
+          <div class="relative w-full lg:w-96">
+            <input type="text" id="searchInput" onkeyup="filterEquipment()" placeholder="🔍 ค้นหาชื่ออุปกรณ์ หรือรหัสอุปกรณ์..."
+              class="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-4 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none">
+          </div>
+          <div class="flex flex-wrap gap-2 w-full lg:w-auto">
+            <button onclick="setCatFilter('ALL')" class="cat-pill bg-indigo-600 text-white px-4 py-2 rounded-2xl text-xs font-semibold transition">ทั้งหมด</button>
+            <button onclick="setCatFilter('ฟิสิกส์')" class="cat-pill bg-amber-50 text-amber-700 hover:bg-amber-100 px-4 py-2 rounded-2xl text-xs font-semibold transition">⚡ ฟิสิกส์</button>
+            <button onclick="setCatFilter('เคมี')" class="cat-pill bg-pink-50 text-pink-700 hover:bg-pink-100 px-4 py-2 rounded-2xl text-xs font-semibold transition">🧪 เคมี</button>
+            <button onclick="setCatFilter('ชีววิทยา')" class="cat-pill bg-emerald-50 text-emerald-700 hover:bg-emerald-100 px-4 py-2 rounded-2xl text-xs font-semibold transition">🧬 ชีววิทยา</button>
+            <button onclick="setCatFilter('ทั่วไป')" class="cat-pill bg-sky-50 text-sky-700 hover:bg-sky-100 px-4 py-2 rounded-2xl text-xs font-semibold transition">🔭 ทั่วไป</button>
+          </div>
+        </div>
+
+        <!-- ตารางการ์ดอุปกรณ์ -->
+        <div id="equipmentGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </section>
+
+      <!-- ==================== VIEW 2: ตะกร้า (CART & BORROW FORM) ==================== -->
+      <section id="cartView" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- รายการอุปกรณ์ในตะกร้า -->
+        <div class="lg:col-span-7 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-4">
+          <div class="flex justify-between items-center border-b pb-3">
+            <h3 class="font-bold text-lg text-slate-800">🛒 รายการอุปกรณ์ในตะกร้า</h3>
+            <button onclick="clearCart()" class="text-xs text-rose-500 hover:underline">ล้างตะกร้าทั้งหมด</button>
+          </div>
+          <div id="cartItemsList" class="space-y-3"></div>
+        </div>
+
+        <!-- ฟอร์มยืนยันการยืม + รูปถ่ายก่อนใช้งาน -->
+        <div class="lg:col-span-5 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 h-fit">
+          <h3 class="font-bold text-lg text-slate-800 border-b pb-3 mb-4">📝 รายละเอียดการยืม & รูปก่อนใช้</h3>
+          <form onsubmit="submitCartBorrow(event)" class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">วันที่เริ่มยืม</label>
+                <input type="date" id="cartBorrowDate" required class="w-full border border-slate-200 rounded-2xl p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">กำหนดวันคืน</label>
+                <input type="date" id="cartReturnDate" required class="w-full border border-slate-200 rounded-2xl p-2.5 text-sm">
+              </div>
+            </div>
+            <p id="cartDateRuleHint" class="text-xs text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl font-medium"></p>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">วัตถุประสงค์ / รายวิชา / ห้องเรียน</label>
+              <input type="text" id="cartNote" required placeholder="เช่น ใช้ทดลองปฏิบัติการเคมี ม.5/2"
+                class="w-full border border-slate-200 rounded-2xl p-3 text-sm">
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-2xl border border-blue-200 space-y-2">
+              <label class="block text-xs font-bold text-indigo-900">📷 แนบรูปถ่ายอุปกรณ์ "ก่อนใช้งาน" (บังคับทุกครั้ง)*</label>
+              <p class="text-[11px] text-indigo-700">จัดวางอุปกรณ์ทั้งหมดที่เบิกแล้วถ่ายภาพให้เห็นสภาพชัดเจน</p>
+              <input type="file" id="cartBeforePhoto" accept="image/*" capture="environment" required
+                onchange="previewImage(this, 'cartBeforePreview')" class="text-xs w-full">
+              <img id="cartBeforePreview" class="hidden w-full h-44 object-cover rounded-xl border mt-2">
+            </div>
+
+            <button type="submit" id="btnSubmitCart" class="w-full py-3.5 rounded-2xl text-white font-semibold text-sm bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-95 shadow-lg shadow-indigo-500/30 transition">
+              ยืนยันการยืมอุปกรณ์ทั้งหมด ✨
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 3: ตรวจสอบ (INSPECT & RETURN) ==================== -->
+      <section id="inspectView" class="hidden space-y-6">
+        <!-- ส่วนที่ 1: สำหรับ Admin อนุมัติคำขอยืมและตรวจรับคืน -->
+        <div id="adminInspectZone" class="hidden space-y-6">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-gradient-to-br from-amber-400 to-orange-500 text-white p-5 rounded-3xl shadow-md">
+              <p class="text-xs opacity-90">รออนุมัติการยืม</p>
+              <p id="statPendingApp" class="text-3xl font-bold mt-1">0</p>
+            </div>
+            <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-5 rounded-3xl shadow-md">
+              <p class="text-xs opacity-90">กำลังถูกใช้งาน</p>
+              <p id="statInUse" class="text-3xl font-bold mt-1">0</p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-500 to-pink-500 text-white p-5 rounded-3xl shadow-md">
+              <p class="text-xs opacity-90">รอตรวจรับคืน</p>
+              <p id="statPendingVer" class="text-3xl font-bold mt-1">0</p>
+            </div>
+            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-5 rounded-3xl shadow-md">
+              <p class="text-xs opacity-90">ตรวจรับสำเร็จแล้ว</p>
+              <p id="statCompleted" class="text-3xl font-bold mt-1">0</p>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+            <h3 class="font-bold text-base text-amber-700 mb-4">⏳ 1. รายการคำขอรออนุมัติ (ตรวจสอบรูปก่อนใช้งาน)</h3>
+            <div id="adminPendingApproval" class="space-y-3"></div>
+          </div>
+
+          <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+            <h3 class="font-bold text-base text-purple-700 mb-4">📸 2. รายการแจ้งคืน (เปรียบเทียบรูป ก่อนใช้ vs หลังใช้)</h3>
+            <div id="adminPendingVerify" class="space-y-3"></div>
+          </div>
+        </div>
+
+        <!-- ส่วนที่ 2: สำหรับนักเรียนและคุณครู กดส่งคืนอุปกรณ์ที่กำลังใช้งาน -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+          <h3 class="font-bold text-base text-indigo-800 mb-4">🔬 อุปกรณ์ที่อยู่ระหว่างการยืม / รอตรวจสอบ</h3>
+          <div id="activeUserLogsList" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 4: ประวัติ (HISTORY) ==================== -->
+      <section id="historyView" class="hidden space-y-4">
+        <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-100 flex flex-wrap justify-between items-center gap-3">
+          <div>
+            <h3 class="font-bold text-lg text-slate-800">🕒 ประวัติการยืม-คืนอุปกรณ์ทั้งหมด</h3>
+            <p class="text-xs text-slate-500">ตรวจสอบบันทึกย้อนหลังและหลักฐานรูปถ่ายก่อน-หลังใช้งาน</p>
+          </div>
+          <select id="historyStatusFilter" onchange="renderHistory()" class="border border-slate-200 rounded-2xl px-4 py-2 text-sm bg-slate-50">
+            <option value="ALL">แสดงทุกสถานะ</option>
             <option value="Pending_Approval">รออนุมัติ</option>
-            <option value="Approved_InUse">กำลังยืม (ยังไม่คืน)</option>
+            <option value="Approved_InUse">กำลังใช้งาน</option>
             <option value="Pending_Verify">รอตรวจรับคืน</option>
             <option value="Completed">คืนสำเร็จแล้ว</option>
+            <option value="Rejected">ไม่อนุมัติ</option>
           </select>
         </div>
+        <div id="historyList" class="space-y-3"></div>
+      </section>
+
+      <!-- ==================== VIEW 5: จัดการ (MANAGE - ADMIN ONLY) ==================== -->
+      <section id="manageView" class="hidden space-y-6">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+          <h3 class="font-bold text-lg text-indigo-800 mb-4">➕ เพิ่มอุปกรณ์วิทยาศาสตร์ใหม่เข้าคลัง</h3>
+          <form onsubmit="handleAddEquipment(event)" class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+            <input type="text" id="newEqName" required placeholder="ชื่ออุปกรณ์ เช่น กล้องจุลทรรศน์" class="sm:col-span-2 border border-slate-200 rounded-2xl px-4 py-2.5 text-sm">
+            <select id="newEqCat" class="border border-slate-200 rounded-2xl px-4 py-2.5 text-sm bg-white">
+              <option value="ฟิสิกส์">⚡ ฟิสิกส์</option>
+              <option value="เคมี">🧪 เคมี</option>
+              <option value="ชีววิทยา">🧬 ชีววิทยา</option>
+              <option value="ทั่วไป">🔭 ทั่วไป</option>
+            </select>
+            <input type="text" id="newEqLoc" required placeholder="ตำแหน่งจัดเก็บ เช่น ตู้ A ชั้น 1" class="border border-slate-200 rounded-2xl px-4 py-2.5 text-sm">
+            <div class="flex gap-2">
+              <input type="number" id="newEqQty" min="1" required placeholder="จำนวน" class="w-24 border border-slate-200 rounded-2xl px-3 py-2.5 text-sm">
+              <button type="submit" class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-2xl px-4 py-2.5 text-sm font-semibold shadow">เพิ่ม</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+          <h3 class="font-bold text-lg text-slate-800 mb-4">📦 รายการอุปกรณ์ทั้งหมดในคลัง</h3>
+          <div id="manageInventoryTable" class="overflow-x-auto"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ======================================================================= -->
+  <!-- MODAL 1: ส่งคืนอุปกรณ์ + ถ่ายรูปหลังใช้งาน                             -->
+  <!-- ======================================================================= -->
+  <div id="returnModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-bold text-lg">📦 แจ้งคืน & บันทึกรูปหลังใช้งาน</h3>
+        <button onclick="closeModal('returnModal')" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
       </div>
-
-      <div id="myLogsList" class="space-y-3"></div>
-    </section>
-
-    <!-- ==================== VIEW 3: ศูนย์อนุมัติและตรวจรับ (เฉพาะครูผู้ดูแลอุปกรณ์ / Admin) ==================== -->
-    <section id="adminView" class="hidden space-y-6">
-      <!-- การ์ดสรุปสถานะ -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl">
-          <p class="text-xs text-amber-700 font-medium">รออนุมัติการยืม</p>
-          <p id="statPendingApp" class="text-2xl font-bold text-amber-800 mt-1">0</p>
+      <form onsubmit="submitReturn(event)" class="space-y-4">
+        <input type="hidden" id="returnLogId">
+        <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 space-y-2">
+          <label class="block text-xs font-bold text-emerald-900">📷 แนบรูปภาพอุปกรณ์ "หลังใช้งาน" (บังคับทุกครั้ง)*</label>
+          <p class="text-[11px] text-emerald-700">ทำความสะอาดและจัดเก็บเข้าที่เรียบร้อยแล้วถ่ายรูปยืนยัน</p>
+          <input type="file" id="afterPhotoInput" accept="image/*" capture="environment" required
+            onchange="previewImage(this, 'afterPreview')" class="text-xs w-full">
+          <img id="afterPreview" class="hidden w-full h-44 object-cover rounded-xl border mt-2">
         </div>
-        <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl">
-          <p class="text-xs text-blue-700 font-medium">กำลังถูกยืมใช้งาน</p>
-          <p id="statInUse" class="text-2xl font-bold text-blue-800 mt-1">0</p>
-        </div>
-        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl">
-          <p class="text-xs text-emerald-700 font-medium">รอตรวจรับคืน</p>
-          <p id="statPendingVer" class="text-2xl font-bold text-emerald-800 mt-1">0</p>
-        </div>
-        <div class="bg-slate-100 border border-slate-200 p-4 rounded-2xl">
-          <p class="text-xs text-slate-600 font-medium">เสร็จสมบูรณ์ทั้งหมด</p>
-          <p id="statCompleted" class="text-2xl font-bold text-slate-800 mt-1">0</p>
-        </div>
-      </div>
-
-      <!-- 1. รายการรออนุมัติการยืม -->
-      <div class="bg-white p-5 rounded-2xl shadow-sm border">
-        <h3 class="font-bold text-amber-700 text-base mb-3">⏳ 1. คำขอรออนุมัติการยืม (ตรวจสอบรูปถ่ายก่อนใช้งาน)</h3>
-        <div id="adminPendingApproval" class="space-y-3"></div>
-      </div>
-
-      <!-- 2. รายการรอตรวจสอบการคืน -->
-      <div class="bg-white p-5 rounded-2xl shadow-sm border">
-        <h3 class="font-bold text-emerald-700 text-base mb-3">📸 2. รายการแจ้งคืน (เปรียบเทียบรูปก่อนใช้ vs หลังใช้ และยืนยันรับคืน)</h3>
-        <div id="adminPendingVerify" class="space-y-3"></div>
-      </div>
-
-      <!-- 3. เพิ่มอุปกรณ์ใหม่เข้าคลัง -->
-      <div class="bg-white p-5 rounded-2xl shadow-sm border">
-        <h3 class="font-bold text-indigo-700 text-base mb-3">➕ 3. เพิ่มรายการอุปกรณ์วิทยาศาสตร์ใหม่เข้าคลัง</h3>
-        <form onsubmit="handleAddEquipment(event)" class="grid grid-cols-1 sm:grid-cols-5 gap-3">
-          <input type="text" id="newEqName" required placeholder="ชื่ออุปกรณ์" class="sm:col-span-2 border rounded-xl p-2 text-sm">
-          <select id="newEqCat" class="border rounded-xl p-2 text-sm bg-white">
-            <option value="ฟิสิกส์">ฟิสิกส์</option>
-            <option value="เคมี">เคมี</option>
-            <option value="ชีววิทยา">ชีววิทยา</option>
-            <option value="ทั่วไป">ทั่วไป</option>
-          </select>
-          <input type="text" id="newEqLoc" required placeholder="ตู้/ชั้นจัดเก็บ" class="border rounded-xl p-2 text-sm">
-          <div class="flex gap-2">
-            <input type="number" id="newEqQty" min="1" required placeholder="จำนวน" class="w-20 border rounded-xl p-2 text-sm">
-            <button type="submit" class="flex-grow bg-indigo-600 text-white rounded-xl px-3 py-2 text-sm font-semibold hover:bg-indigo-700">บันทึก</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ==================== MODAL 1: ยืมอุปกรณ์ + รูปถ่ายก่อนใช้ ==================== -->
-  <div id="borrowModal" class="fixed inset-0 bg-slate-900/60 hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-bold text-lg">📝 แบบฟอร์มขอยืมอุปกรณ์</h3>
-        <button onclick="closeModal('borrowModal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
-      </div>
-      <form onsubmit="submitBorrow(event)" class="space-y-3">
-        <input type="hidden" id="modalItemId">
-        <div class="bg-indigo-50 p-3 rounded-xl">
-          <p class="text-xs text-indigo-600">อุปกรณ์ที่เลือก</p>
-          <p id="modalItemName" class="font-bold text-indigo-900"></p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold mb-1">จำนวนที่ยืม</label>
-            <input type="number" id="modalQty" min="1" value="1" required class="w-full border rounded-xl p-2">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold mb-1">วันที่เริ่มยืม</label>
-            <input type="date" id="modalBorrowDate" required class="w-full border rounded-xl p-2">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold mb-1">กำหนดวันส่งคืน <span id="dateRuleHint" class="text-indigo-600 font-normal"></span></label>
-          <input type="date" id="modalReturnDate" required class="w-full border rounded-xl p-2">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold mb-1">วัตถุประสงค์ / รายวิชาที่ใช้</label>
-          <input type="text" id="modalNote" required placeholder="เช่น ทดลองเรื่องการไทเทรต ม.5/2" class="w-full border rounded-xl p-2">
-        </div>
-
-        <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 space-y-2">
-          <label class="block text-xs font-bold text-blue-900">📷 บันทึกรูปภาพอุปกรณ์ "ก่อนใช้งาน" (บังคับทุกครั้ง)*</label>
-          <input type="file" id="beforePhotoInput" accept="image/*" capture="environment" required
-            onchange="previewImage(this, 'beforePreview')" class="text-xs w-full">
-          <img id="beforePreview" class="hidden w-full h-40 object-cover rounded-lg border mt-2">
-        </div>
-
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('borrowModal')" class="px-4 py-2 bg-slate-100 rounded-xl text-sm">ยกเลิก</button>
-          <button type="submit" id="btnSubmitBorrow" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-semibold">ส่งคำขอยืม</button>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeModal('returnModal')" class="px-4 py-2.5 bg-slate-100 rounded-2xl text-sm">ยกเลิก</button>
+          <button type="submit" id="btnSubmitReturn" class="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl text-sm font-semibold shadow">ยืนยันการส่งคืน</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ==================== MODAL 2: ส่งคืนอุปกรณ์ + รูปถ่ายหลังใช้ ==================== -->
-  <div id="returnModal" class="fixed inset-0 bg-slate-900/60 hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4">
-      <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-bold text-lg">📦 แจ้งคืนและบันทึกรูปหลังใช้งาน</h3>
-        <button onclick="closeModal('returnModal')" class="text-slate-400 hover:text-slate-600 text-xl">&times;</button>
+  <!-- ======================================================================= -->
+  <!-- MODAL 2: ระบบ PIN ล็อกหน้าจอ / สลับบัญชีด่วนในห้องแล็บ                   -->
+  <!-- ======================================================================= -->
+  <div id="pinModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl">
+      <div class="w-14 h-14 mx-auto rounded-2xl logo-glow flex items-center justify-center text-white text-2xl font-bold">
+        🔐
       </div>
-      <form onsubmit="submitReturn(event)" class="space-y-4">
-        <input type="hidden" id="returnLogId">
-        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 space-y-2">
-          <label class="block text-xs font-bold text-emerald-900">📷 บันทึกรูปภาพอุปกรณ์ "หลังใช้งาน" (บังคับทุกครั้ง)*</label>
-          <p class="text-[11px] text-emerald-700">กรุณาทำความสะอาดและจัดเก็บเข้าที่ให้เรียบร้อยก่อนถ่ายภาพ</p>
-          <input type="file" id="afterPhotoInput" accept="image/*" capture="environment" required
-            onchange="previewImage(this, 'afterPreview')" class="text-xs w-full">
-          <img id="afterPreview" class="hidden w-full h-40 object-cover rounded-lg border mt-2">
-        </div>
-        <div class="flex justify-end gap-2">
-          <button type="button" onclick="closeModal('returnModal')" class="px-4 py-2 bg-slate-100 rounded-xl text-sm">ยกเลิก</button>
-          <button type="submit" id="btnSubmitReturn" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold">ยืนยันการส่งคืน</button>
+      <div>
+        <h3 class="font-bold text-lg text-slate-800">ระบบล็อกหน้าจอ PIN</h3>
+        <p class="text-xs text-slate-500">กรอกรหัส PIN 4 หลักเพื่อปลดล็อกหรือสลับผู้ใช้งาน</p>
+      </div>
+      <form onsubmit="verifyPinUnlock(event)" class="space-y-3">
+        <input type="password" id="pinInput" maxlength="4" pattern="\d{4}" required placeholder="••••"
+          class="w-full text-center text-2xl tracking-[0.6em] font-bold border border-slate-300 rounded-2xl py-3 focus:ring-2 focus:ring-indigo-500">
+        <div class="flex gap-2">
+          <button type="button" onclick="closeModal('pinModal')" class="flex-1 py-2.5 bg-slate-100 rounded-2xl text-xs font-semibold">ปิด</button>
+          <button type="submit" class="flex-1 py-2.5 bg-indigo-600 text-white rounded-2xl text-xs font-semibold">ปลดล็อก</button>
         </div>
       </form>
     </div>
@@ -314,60 +601,65 @@
 
   <script>
     // =========================================================================
-    // *** วาง URL ที่ได้จากการ Deploy Google Apps Script ตรงนี้ ***
+    // *** วาง Web App URL (/exec) จากบัญชี @gmail.com ตรงนี้ ***
     // =========================================================================
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwm1ibnDyy6AJRVH--lkCsOxuwQr39Q42lgteR-72XAG90SO1BcgV7c65_HBNUKwiqj/exec";
+    const GAS_WEB_APP_URL = "https://script.google.com/a/macros/psuwit.ac.th/s/AKfycbzQggQvmbEVYr-DMwsU202LWci3BfUgZT6ONCMClS9xUqt1K0K5x-VwkrVE5C38e6m2/exec";
 
     let currentUser = null;
     let equipmentData = [];
     let myLogsData = [];
+    let allLogsData = [];
+    let cart = [];
+    let selectedCategory = "ALL";
 
-    const STATUS_MAP = {
-      Pending_Approval: { label: "⏳ รออนุมัติ", color: "bg-amber-100 text-amber-800" },
-      Approved_InUse: { label: "🔬 กำลังใช้งาน", color: "bg-blue-100 text-blue-800" },
-      Pending_Verify: { label: "📸 รอตรวจรับคืน", color: "bg-purple-100 text-purple-800" },
-      Completed: { label: "✅ คืนสำเร็จ", color: "bg-emerald-100 text-emerald-800" },
-      Rejected: { label: "❌ ไม่อนุมัติ", color: "bg-rose-100 text-rose-800" }
+    const STATUS_BADGE = {
+      Pending_Approval: { label: "⏳ รออนุมัติ", cls: "bg-amber-100 text-amber-800" },
+      Approved_InUse: { label: "🔬 กำลังใช้งาน", cls: "bg-blue-100 text-blue-800" },
+      Pending_Verify: { label: "📸 รอตรวจรับคืน", cls: "bg-purple-100 text-purple-800" },
+      Completed: { label: "✅ คืนสำเร็จ", cls: "bg-emerald-100 text-emerald-800" },
+      Rejected: { label: "❌ ไม่อนุมัติ", cls: "bg-rose-100 text-rose-800" }
     };
 
-    // ตรวจสอบ Session ค้างไว้เมื่อรีเฟรชหน้า
+    const CAT_COLOR = {
+      "ฟิสิกส์": "from-amber-400 to-orange-500",
+      "เคมี": "from-pink-500 to-rose-500",
+      "ชีววิทยา": "from-emerald-400 to-teal-600",
+      "ทั่วไป": "from-sky-400 to-indigo-500"
+    };
+
     window.onload = () => {
       const saved = sessionStorage.getItem("scilab_user");
       if (saved) {
         currentUser = JSON.parse(saved);
-        initDashboard();
+        initWorkspace();
       }
     };
 
-    // --- 1. สลับแท็บ Login / Register ---
+    // --- 1. Auth Tabs & RBAC Passcode ---
     function switchAuthTab(tab) {
       document.getElementById("loginForm").classList.toggle("hidden", tab !== "login");
       document.getElementById("registerForm").classList.toggle("hidden", tab !== "register");
       document.getElementById("tabLoginBtn").className = tab === "login"
-        ? "py-3.5 font-semibold text-indigo-600 border-b-2 border-indigo-600 bg-white"
-        : "py-3.5 font-semibold text-slate-500 hover:text-slate-700";
+        ? "flex-1 py-2.5 rounded-xl text-sm font-semibold bg-white text-indigo-600 shadow-sm"
+        : "flex-1 py-2.5 rounded-xl text-sm font-semibold text-slate-500";
       document.getElementById("tabRegBtn").className = tab === "register"
-        ? "py-3.5 font-semibold text-emerald-600 border-b-2 border-emerald-600 bg-white"
-        : "py-3.5 font-semibold text-slate-500 hover:text-slate-700";
+        ? "flex-1 py-2.5 rounded-xl text-sm font-semibold bg-white text-emerald-600 shadow-sm"
+        : "flex-1 py-2.5 rounded-xl text-sm font-semibold text-slate-500";
     }
 
     function togglePasscodeField() {
       const role = document.getElementById("regRole").value;
       const box = document.getElementById("passcodeBox");
       const input = document.getElementById("regPasscode");
-      if (role === "Teacher" || role === "Admin") {
-        box.classList.remove("hidden");
-        input.required = true;
-      } else {
-        box.classList.add("hidden");
-        input.required = false;
-      }
+      const needCode = (role === "Teacher" || role === "Admin");
+      box.classList.toggle("hidden", !needCode);
+      input.required = needCode;
     }
 
     async function handleRegister(e) {
       e.preventDefault();
       const btn = document.getElementById("btnRegister");
-      btn.disabled = true; btn.innerText = "กำลังบันทึกข้อมูล...";
+      btn.disabled = true; btn.innerText = "กำลังสร้างบัญชี...";
 
       const res = await callGAS({
         action: "register",
@@ -376,10 +668,11 @@
         fullName: document.getElementById("regName").value,
         username: document.getElementById("regUser").value,
         classDept: document.getElementById("regClass").value,
-        password: document.getElementById("regPass").value
+        password: document.getElementById("regPass").value,
+        pin: document.getElementById("regPin").value
       });
 
-      btn.disabled = false; btn.innerText = "ยืนยันการลงทะเบียน";
+      btn.disabled = false; btn.innerText = "สร้างบัญชีผู้ใช้งาน ✨";
       alert(res.message);
       if (res.status === "success") {
         document.getElementById("registerForm").reset();
@@ -390,7 +683,7 @@
     async function handleLogin(e) {
       e.preventDefault();
       const btn = document.getElementById("btnLogin");
-      btn.disabled = true; btn.innerText = "กำลังเข้าสู่ระบบ...";
+      btn.disabled = true; btn.innerText = "กำลังเข้าสู่ห้องปฏิบัติการ...";
 
       const res = await callGAS({
         action: "login",
@@ -398,11 +691,11 @@
         password: document.getElementById("loginPass").value
       });
 
-      btn.disabled = false; btn.innerText = "เข้าสู่ระบบ";
+      btn.disabled = false; btn.innerText = "เข้าสู่ระบบห้องปฏิบัติการ 🚀";
       if (res.status === "success") {
         currentUser = res.user;
         sessionStorage.setItem("scilab_user", JSON.stringify(currentUser));
-        initDashboard();
+        initWorkspace();
       } else {
         alert(res.message);
       }
@@ -410,193 +703,324 @@
 
     function logout() {
       currentUser = null;
+      cart = [];
       sessionStorage.removeItem("scilab_user");
       document.getElementById("authSection").classList.remove("hidden");
       document.getElementById("dashboardSection").classList.add("hidden");
-      document.getElementById("userNav").classList.add("hidden");
     }
 
-    // --- 2. ตั้งค่าหน้าจอตามสิทธิ์ RBAC ---
-    function initDashboard() {
+    // --- 2. Workspace & RBAC Setup ---
+    function initWorkspace() {
       document.getElementById("authSection").classList.add("hidden");
       document.getElementById("dashboardSection").classList.remove("hidden");
-      document.getElementById("userNav").classList.remove("hidden");
 
-      const roleThai = { Student: "👨‍🎓 นักเรียน", Teacher: "👩‍🏫 คุณครู", Admin: "🥼 ครูผู้ดูแลอุปกรณ์" };
-      document.getElementById("navUserName").innerText = currentUser.fullName;
-      document.getElementById("navUserRole").innerText = `${roleThai[currentUser.role]} • ${currentUser.classDept}`;
+      const roleNameThai = { Student: "นักเรียน", Teacher: "คุณครูผู้สอน", Admin: "ผู้ดูแลระบบ" };
+      document.getElementById("sidebarUserName").innerText = currentUser.fullName;
+      document.getElementById("sidebarUserRole").innerText = `${roleNameThai[currentUser.role]} • ${currentUser.classDept}`;
+      document.getElementById("sidebarAvatar").innerText = currentUser.fullName.charAt(0);
+      document.getElementById("roleTagBanner").innerText = `สิทธิ์การใช้งาน: ${roleNameThai[currentUser.role]} (${currentUser.classDept})`;
 
-      if (currentUser.role === "Admin") {
-        document.getElementById("menuAdmin").classList.remove("hidden");
-        showView("adminView");
-      } else {
-        document.getElementById("menuAdmin").classList.add("hidden");
-        if (currentUser.role === "Teacher") {
-          document.getElementById("teacherHistoryHeader").classList.remove("hidden");
-          document.getElementById("menuMyLogs").innerText = "📚 ประวัติการยืมทั้งหมดของฉัน";
-        } else {
-          document.getElementById("teacherHistoryHeader").classList.add("hidden");
-          document.getElementById("menuMyLogs").innerText = "📋 รายการยืม-คืนของฉัน";
-        }
-        showView("catalogView");
-      }
+      // แสดงเมนู "จัดการ" และส่วนตรวจสอบของ Admin เฉพาะผู้ดูแลระบบ
+      const isAdmin = currentUser.role === "Admin";
+      document.getElementById("nav-manageView").classList.toggle("hidden", !isAdmin);
+      document.getElementById("adminInspectZone").classList.toggle("hidden", !isAdmin);
+
+      setupCartDates();
+      switchView(isAdmin ? "inspectView" : "equipmentView");
       loadAllData();
     }
 
-    function showView(viewId) {
-      ["catalogView", "myLogsView", "adminView"].forEach(id => {
+    function switchView(viewId) {
+      ["equipmentView", "cartView", "inspectView", "historyView", "manageView"].forEach(id => {
         document.getElementById(id).classList.add("hidden");
       });
       document.getElementById(viewId).classList.remove("hidden");
+
+      document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("nav-item-active"));
+      const activeBtn = document.getElementById("nav-" + viewId);
+      if (activeBtn) activeBtn.classList.add("nav-item-active");
+
+      const titles = {
+        equipmentView: ["คลังอุปกรณ์วิทยาศาสตร์", "ค้นหาและเพิ่มอุปกรณ์ลงตะกร้าเพื่อทำรายการยืม"],
+        cartView: ["ตะกร้าอุปกรณ์ที่เลือก", "ตรวจสอบจำนวน กำหนดวันยืม-คืน และแนบรูปถ่ายก่อนใช้งาน"],
+        inspectView: ["ศูนย์ตรวจสอบและส่งคืนอุปกรณ์", "อนุมัติคำขอยืม แนบรูปหลังใช้ และตรวจรับคืนอุปกรณ์"],
+        historyView: ["ประวัติการยืม-คืนทั้งหมด", "เรียกดูบันทึกการยืมย้อนหลังพร้อมหลักฐานภาพถ่ายทุกครั้ง"],
+        manageView: ["จัดการคลังอุปกรณ์วิทยาศาสตร์", "เพิ่มรายการอุปกรณ์ใหม่และตรวจสอบจำนวนคงเหลือในระบบ"]
+      };
+      document.getElementById("pageHeaderTitle").innerText = titles[viewId][0];
+      document.getElementById("pageHeaderDesc").innerText = titles[viewId][1];
+
+      // ปิด Sidebar บนมือถืออัตโนมัติ
+      document.getElementById("appSidebar").classList.add("-translate-x-full");
     }
 
-    // --- 3. โหลดข้อมูลและแสดงผล ---
+    function toggleMobileSidebar() {
+      document.getElementById("appSidebar").classList.toggle("-translate-x-full");
+    }
+
+    // --- 3. Load & Render Data ---
     async function loadAllData() {
       const res = await callGAS({ action: "getData", userId: currentUser.userId, role: currentUser.role });
       if (res.status !== "success") return;
 
       equipmentData = res.equipment;
       myLogsData = res.myLogs;
-      renderEquipment(equipmentData);
-      renderMyLogs();
-      if (currentUser.role === "Admin") renderAdminDashboard(res.allLogs);
+      allLogsData = res.allLogs;
+
+      renderEquipment();
+      renderInspectAndActive();
+      renderHistory();
+      if (currentUser.role === "Admin") renderManageInventory();
     }
 
-    function renderEquipment(list) {
-      const grid = document.getElementById("equipmentGrid");
-      grid.innerHTML = list.map(item => `
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition">
-          <div>
-            <div class="flex justify-between items-start">
-              <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">${item.Category}</span>
-              <span class="text-xs text-slate-400">${item.ItemID}</span>
-            </div>
-            <h3 class="font-bold text-base mt-2.5 text-slate-800">${item.Name}</h3>
-            <p class="text-xs text-slate-500 mt-1">📍 จัดเก็บ: ${item.Location}</p>
-            <div class="mt-3 pt-3 border-t flex justify-between items-center text-sm">
-              <span class="text-slate-500">คงเหลือพร้อมยืม</span>
-              <span class="font-bold ${item.AvailableQty > 0 ? 'text-emerald-600' : 'text-rose-500'}">
-                ${item.AvailableQty} / ${item.TotalQty} ชิ้น
-              </span>
-            </div>
-          </div>
-          <button onclick='openBorrowModal(${JSON.stringify(item)})' ${item.AvailableQty <= 0 ? "disabled" : ""}
-            class="mt-4 w-full py-2.5 rounded-xl text-sm font-semibold text-white transition ${item.AvailableQty > 0 ? "bg-indigo-600 hover:bg-indigo-700" : "bg-slate-300 cursor-not-allowed"}">
-            ${item.AvailableQty > 0 ? "+ เลือกยืมอุปกรณ์นี้" : "อุปกรณ์หมดชั่วคราว"}
-          </button>
-        </div>
-      `).join("");
+    function setCatFilter(cat) {
+      selectedCategory = cat;
+      filterEquipment();
     }
 
     function filterEquipment() {
       const q = document.getElementById("searchInput").value.toLowerCase();
-      const cat = document.getElementById("categoryFilter").value;
       const filtered = equipmentData.filter(item =>
-        item.Name.toLowerCase().includes(q) && (cat === "ALL" || item.Category === cat)
+        (item.Name.toLowerCase().includes(q) || item.ItemID.toLowerCase().includes(q)) &&
+        (selectedCategory === "ALL" || item.Category === selectedCategory)
       );
       renderEquipment(filtered);
     }
 
-    // --- 4. ฟอร์มยืม (แยกเงื่อนไขวันที่ระหว่าง นักเรียน vs คุณครู) ---
-    function openBorrowModal(item) {
-      document.getElementById("modalItemId").value = item.ItemID;
-      document.getElementById("modalItemName").innerText = `${item.Name} (คงเหลือ ${item.AvailableQty} ชิ้น)`;
-      document.getElementById("modalQty").max = item.AvailableQty;
-      document.getElementById("beforePhotoInput").value = "";
-      document.getElementById("beforePreview").classList.add("hidden");
+    function renderEquipment(list = equipmentData) {
+      const grid = document.getElementById("equipmentGrid");
+      grid.innerHTML = list.map(item => {
+        const grad = CAT_COLOR[item.Category] || "from-indigo-500 to-purple-600";
+        const pct = item.TotalQty > 0 ? Math.round((item.AvailableQty / item.TotalQty) * 100) : 0;
+        return `
+          <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-white px-3 py-1 rounded-full bg-gradient-to-r ${grad} shadow-sm">
+                  ${item.Category}
+                </span>
+                <span class="text-xs font-mono text-slate-400">${item.ItemID}</span>
+              </div>
+              <h3 class="font-bold text-base text-slate-800 mt-3 leading-snug">${item.Name}</h3>
+              <p class="text-xs text-slate-500 mt-1.5">📍 จัดเก็บ: ${item.Location}</p>
 
+              <div class="mt-4 space-y-1.5">
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-500">คงเหลือพร้อมยืม</span>
+                  <span class="font-bold ${item.AvailableQty > 0 ? 'text-emerald-600' : 'text-rose-500'}">
+                    ${item.AvailableQty} / ${item.TotalQty} ชิ้น
+                  </span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-to-r ${grad} rounded-full" style="width: ${pct}%"></div>
+                </div>
+              </div>
+            </div>
+
+            <button onclick='addToCart(${JSON.stringify(item)})' ${item.AvailableQty <= 0 ? "disabled" : ""}
+              class="mt-5 w-full py-2.5 rounded-2xl text-xs font-bold text-white transition flex items-center justify-center gap-2 ${item.AvailableQty > 0 ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:opacity-90 shadow-md shadow-indigo-500/20' : 'bg-slate-300 cursor-not-allowed'}">
+              <span>🛒</span> ${item.AvailableQty > 0 ? "เพิ่มลงตะกร้า" : "อุปกรณ์หมด"}
+            </button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // --- 4. Cart System (ตะกร้าอุปกรณ์) ---
+    function addToCart(item) {
+      const existing = cart.find(c => c.ItemID === item.ItemID);
+      if (existing) {
+        if (existing.qty < item.AvailableQty) {
+          existing.qty += 1;
+        } else {
+          alert("เลือกครบจำนวนคงเหลือสูงสุดในคลังแล้ว");
+          return;
+        }
+      } else {
+        cart.push({ ...item, qty: 1 });
+      }
+      updateCartUI();
+    }
+
+    function updateCartQty(itemId, delta) {
+      const idx = cart.findIndex(c => c.ItemID === itemId);
+      if (idx === -1) return;
+      const newQty = cart[idx].qty + delta;
+      if (newQty <= 0) {
+        cart.splice(idx, 1);
+      } else if (newQty <= cart[idx].AvailableQty) {
+        cart[idx].qty = newQty;
+      }
+      updateCartUI();
+    }
+
+    function clearCart() {
+      cart = [];
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const badge = document.getElementById("cartBadge");
+      const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+      badge.innerText = totalItems;
+      badge.classList.toggle("hidden", totalItems === 0);
+
+      const list = document.getElementById("cartItemsList");
+      if (!cart.length) {
+        list.innerHTML = `<div class="text-center py-10 text-slate-400 text-sm">ยังไม่มีอุปกรณ์ในตะกร้า กดเลือกจากเมนู "อุปกรณ์" ได้เลยครับ 🧪</div>`;
+        return;
+      }
+
+      list.innerHTML = cart.map(item => `
+        <div class="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+          <div>
+            <p class="font-bold text-sm text-slate-800">${item.Name}</p>
+            <p class="text-xs text-slate-500">${item.Category} • คงเหลือ ${item.AvailableQty} ชิ้น</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="updateCartQty('${item.ItemID}', -1)" class="w-8 h-8 rounded-xl bg-white border font-bold hover:bg-slate-100">-</button>
+            <span class="w-7 text-center font-bold text-sm">${item.qty}</span>
+            <button onclick="updateCartQty('${item.ItemID}', 1)" class="w-8 h-8 rounded-xl bg-white border font-bold hover:bg-slate-100">+</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function setupCartDates() {
       const today = new Date().toISOString().split("T")[0];
-      const bDate = document.getElementById("modalBorrowDate");
-      const rDate = document.getElementById("modalReturnDate");
-      const hint = document.getElementById("dateRuleHint");
+      const bDate = document.getElementById("cartBorrowDate");
+      const rDate = document.getElementById("cartReturnDate");
+      const hint = document.getElementById("cartDateRuleHint");
 
       bDate.value = today;
-
       if (currentUser.role === "Student") {
-        // นักเรียน: ยืมได้วันนี้ และคืนภายใน 3 วัน
         bDate.readOnly = true;
         const maxD = new Date();
         maxD.setDate(maxD.getDate() + 3);
         rDate.min = today;
         rDate.max = maxD.toISOString().split("T")[0];
         rDate.value = today;
-        hint.innerText = "(สิทธิ์นักเรียน: ยืมได้สูงสุด 3 วัน)";
+        hint.innerText = "👨‍🎓 สิทธิ์นักเรียน: ยืมได้ตั้งแต่วันนี้ และกำหนดคืนได้สูงสุดไม่เกิน 3 วัน";
       } else {
-        // คุณครู: เลือกวันยืมล่วงหน้าและกำหนดวันคืนได้อิสระ
         bDate.readOnly = false;
         bDate.min = today;
         rDate.min = today;
         rDate.removeAttribute("max");
         rDate.value = today;
-        hint.innerText = "(สิทธิ์คุณครู: ตั้งวันยืมล่วงหน้าและวันคืนได้อิสระ)";
+        hint.innerText = "👩‍🏫 สิทธิ์คุณครู/ผู้ดูแล: สามารถจองวันยืมล่วงหน้าและกำหนดวันคืนได้อิสระ";
       }
-
-      document.getElementById("borrowModal").classList.remove("hidden");
+      updateCartUI();
     }
 
-    async function submitBorrow(e) {
+    async function submitCartBorrow(e) {
       e.preventDefault();
-      const btn = document.getElementById("btnSubmitBorrow");
-      btn.disabled = true; btn.innerText = "กำลังอัปโหลดรูปภาพ...";
+      if (!cart.length) { alert("กรุณาเลือกอุปกรณ์ใส่ตะกร้าก่อนอย่างน้อย 1 รายการ"); return; }
 
-      const file = document.getElementById("beforePhotoInput").files[0];
+      const btn = document.getElementById("btnSubmitCart");
+      btn.disabled = true; btn.innerText = "กำลังอัปโหลดรูปก่อนใช้งาน...";
+
+      const file = document.getElementById("cartBeforePhoto").files[0];
       const base64 = await compressImage(file);
 
       const res = await callGAS({
-        action: "borrow",
+        action: "borrowCart",
         userId: currentUser.userId,
         userName: currentUser.fullName,
         role: currentUser.role,
-        itemId: document.getElementById("modalItemId").value,
-        qty: document.getElementById("modalQty").value,
-        borrowDate: document.getElementById("modalBorrowDate").value,
-        returnDueDate: document.getElementById("modalReturnDate").value,
-        note: document.getElementById("modalNote").value,
+        items: cart.map(c => ({ itemId: c.ItemID, qty: c.qty })),
+        borrowDate: document.getElementById("cartBorrowDate").value,
+        returnDueDate: document.getElementById("cartReturnDate").value,
+        note: document.getElementById("cartNote").value,
         beforeImage: base64
       });
 
-      btn.disabled = false; btn.innerText = "ส่งคำขอยืม";
+      btn.disabled = false; btn.innerText = "ยืนยันการยืมอุปกรณ์ทั้งหมด ✨";
       alert(res.message);
-      closeModal("borrowModal");
-      loadAllData();
+      if (res.status === "success") {
+        cart = [];
+        document.getElementById("cartNote").value = "";
+        document.getElementById("cartBeforePhoto").value = "";
+        document.getElementById("cartBeforePreview").classList.add("hidden");
+        updateCartUI();
+        loadAllData();
+        switchView("inspectView");
+      }
     }
 
-    // --- 5. แสดงประวัติและการแจ้งคืนพร้อมรูปหลังใช้ ---
-    function renderMyLogs() {
-      const filterStatus = document.getElementById("logStatusFilter")?.value || "ALL";
-      const list = myLogsData.filter(l => filterStatus === "ALL" || l.Status === filterStatus);
-      const container = document.getElementById("myLogsList");
-
-      if (!list.length) {
-        container.innerHTML = `<div class="bg-white p-8 rounded-2xl text-center text-slate-400 border">ไม่พบรายการประวัติการยืม</div>`;
-        return;
-      }
-
-      container.innerHTML = list.map(log => {
-        const st = STATUS_MAP[log.Status] || { label: log.Status, color: "bg-slate-100" };
+    // --- 5. Inspect & Return ---
+    function renderInspectAndActive() {
+      // รายการที่กำลังยืมของ User ปัจจุบัน
+      const activeUser = myLogsData.filter(l => ["Pending_Approval", "Approved_InUse", "Pending_Verify"].includes(l.Status));
+      document.getElementById("activeUserLogsList").innerHTML = activeUser.length ? activeUser.map(l => {
+        const st = STATUS_BADGE[l.Status] || { label: l.Status, cls: "bg-slate-100" };
         return `
-          <div class="bg-white p-4 rounded-2xl shadow-sm border flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div class="space-y-1">
               <div class="flex flex-wrap items-center gap-2">
-                <span class="font-bold text-slate-800">${log.ItemName}</span>
-                <span class="text-xs font-semibold bg-slate-100 px-2 py-0.5 rounded">จำนวน ${log.Qty} ชิ้น</span>
-                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${st.color}">${st.label}</span>
+                <span class="font-bold text-sm text-slate-800">${l.ItemName} (x${l.Qty})</span>
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${st.cls}">${st.label}</span>
               </div>
-              <p class="text-xs text-slate-500">📅 วันที่ยืม: <b>${log.BorrowDate}</b> | กำหนดคืน: <b>${log.ReturnDueDate}</b> ${log.ActualReturnDate ? `| คืนจริง: <b>${log.ActualReturnDate}</b>` : ""}</p>
-              <p class="text-xs text-slate-500">📝 วัตถุประสงค์: ${log.Note}</p>
-              ${log.AdminNote ? `<p class="text-xs text-indigo-600">💬 หมายเหตุจากผู้ดูแล: ${log.AdminNote}</p>` : ""}
-              <div class="flex gap-4 pt-1 text-xs font-medium">
-                ${log.BeforeImgURL ? `<a href="${log.BeforeImgURL}" target="_blank" class="text-blue-600 hover:underline">🖼️ ดูรูปถ่ายก่อนใช้</a>` : ""}
-                ${log.AfterImgURL ? `<a href="${log.AfterImgURL}" target="_blank" class="text-emerald-600 hover:underline">🖼️ ดูรูปถ่ายหลังใช้</a>` : ""}
+              <p class="text-xs text-slate-500">ยืม: ${l.BorrowDate} | กำหนดคืน: ${l.ReturnDueDate}</p>
+              <div class="flex gap-3 text-xs pt-1">
+                ${l.BeforeImgURL ? `<a href="${l.BeforeImgURL}" target="_blank" class="text-indigo-600 underline font-medium">🖼️ รูปก่อนใช้</a>` : ""}
+                ${l.AfterImgURL ? `<a href="${l.AfterImgURL}" target="_blank" class="text-emerald-600 underline font-medium">🖼️ รูปหลังใช้</a>` : ""}
               </div>
             </div>
-            ${log.Status === "Approved_InUse" ? `
-              <button onclick="openReturnModal('${log.LogID}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold shrink-0">
-                📸 ส่งคืน + แนบรูปหลังใช้
+            ${l.Status === "Approved_InUse" ? `
+              <button onclick="openReturnModal('${l.LogID}')" class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-2xl text-xs font-semibold shadow">
+                📸 แจ้งคืน + รูปหลังใช้
               </button>` : ""}
           </div>
         `;
-      }).join("");
+      }).join("") : `<p class="text-sm text-slate-400">ไม่มีรายการอุปกรณ์ที่กำลังยืมอยู่ในขณะนี้</p>`;
+
+      // สำหรับ Admin: แสดงสถิติและรายการรออนุมัติ / ตรวจรับคืน
+      if (currentUser.role === "Admin") {
+        const pendingApp = allLogsData.filter(l => l.Status === "Pending_Approval");
+        const inUse = allLogsData.filter(l => l.Status === "Approved_InUse");
+        const pendingVer = allLogsData.filter(l => l.Status === "Pending_Verify");
+        const completed = allLogsData.filter(l => l.Status === "Completed");
+
+        document.getElementById("statPendingApp").innerText = pendingApp.length;
+        document.getElementById("statInUse").innerText = inUse.length;
+        document.getElementById("statPendingVer").innerText = pendingVer.length;
+        document.getElementById("statCompleted").innerText = completed.length;
+
+        const badgeCount = pendingApp.length + pendingVer.length;
+        const inspectBadge = document.getElementById("inspectBadge");
+        inspectBadge.innerText = badgeCount;
+        inspectBadge.classList.toggle("hidden", badgeCount === 0);
+
+        document.getElementById("adminPendingApproval").innerHTML = pendingApp.length ? pendingApp.map(l => `
+          <div class="p-4 rounded-2xl bg-amber-50/50 border border-amber-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div class="space-y-1">
+              <p class="font-bold text-sm">${l.UserName} <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full">${l.Role}</span></p>
+              <p class="text-xs text-slate-600">ขอเบิก: <b>${l.ItemName}</b> จำนวน <b>${l.Qty}</b> ชิ้น (${l.BorrowDate} ถึง ${l.ReturnDueDate})</p>
+              <p class="text-xs text-slate-500">หมายเหตุ: ${l.Note}</p>
+              <a href="${l.BeforeImgURL}" target="_blank" class="inline-block text-xs text-blue-600 font-semibold underline">📷 เปิดดูรูปก่อนใช้งาน</a>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="adminApprove('${l.LogID}')" class="bg-emerald-600 text-white px-3.5 py-2 rounded-xl text-xs font-semibold">✅ อนุมัติ</button>
+              <button onclick="adminReject('${l.LogID}')" class="bg-rose-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold">❌ ปฏิเสธ</button>
+            </div>
+          </div>
+        `).join("") : `<p class="text-sm text-slate-400">ไม่มีคำขอรออนุมัติ</p>`;
+
+        document.getElementById("adminPendingVerify").innerHTML = pendingVer.length ? pendingVer.map(l => `
+          <div class="p-4 rounded-2xl bg-purple-50/50 border border-purple-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div class="space-y-1">
+              <p class="font-bold text-sm">${l.UserName} (${l.Role}) • คืน: ${l.ItemName} (x${l.Qty})</p>
+              <div class="flex gap-4 text-xs pt-1">
+                <a href="${l.BeforeImgURL}" target="_blank" class="text-blue-600 font-semibold underline">1️⃣ รูปก่อนใช้</a>
+                <a href="${l.AfterImgURL}" target="_blank" class="text-emerald-700 font-semibold underline">2️⃣ รูปหลังใช้</a>
+              </div>
+            </div>
+            <button onclick="adminVerifyReturn('${l.LogID}')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow">
+              🛡️ ยืนยันสภาพสมบูรณ์และรับคืน
+            </button>
+          </div>
+        `).join("") : `<p class="text-sm text-slate-400">ไม่มีรายการรอตรวจรับคืน</p>`;
+      }
     }
 
     function openReturnModal(logId) {
@@ -610,7 +1034,6 @@
       e.preventDefault();
       const btn = document.getElementById("btnSubmitReturn");
       btn.disabled = true; btn.innerText = "กำลังส่งรูปหลังใช้งาน...";
-
       const file = document.getElementById("afterPhotoInput").files[0];
       const base64 = await compressImage(file);
 
@@ -624,50 +1047,6 @@
       alert(res.message);
       closeModal("returnModal");
       loadAllData();
-    }
-
-    // --- 6. แดชบอร์ดฝั่ง Admin (ครูผู้ดูแลอุปกรณ์) ---
-    function renderAdminDashboard(allLogs) {
-      const pendingApp = allLogs.filter(l => l.Status === "Pending_Approval");
-      const inUse = allLogs.filter(l => l.Status === "Approved_InUse");
-      const pendingVer = allLogs.filter(l => l.Status === "Pending_Verify");
-      const completed = allLogs.filter(l => l.Status === "Completed");
-
-      document.getElementById("statPendingApp").innerText = pendingApp.length;
-      document.getElementById("statInUse").innerText = inUse.length;
-      document.getElementById("statPendingVer").innerText = pendingVer.length;
-      document.getElementById("statCompleted").innerText = completed.length;
-
-      document.getElementById("adminPendingApproval").innerHTML = pendingApp.length ? pendingApp.map(l => `
-        <div class="border border-amber-200 bg-amber-50/30 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-          <div class="space-y-1">
-            <p class="font-bold text-sm">${l.UserName} <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded">${l.Role}</span></p>
-            <p class="text-xs text-slate-600">ขอเบิก: <b>${l.ItemName}</b> จำนวน <b>${l.Qty}</b> ชิ้น (${l.BorrowDate} ถึง ${l.ReturnDueDate})</p>
-            <p class="text-xs text-slate-500">วัตถุประสงค์: ${l.Note}</p>
-            <a href="${l.BeforeImgURL}" target="_blank" class="inline-block text-xs text-blue-600 font-semibold underline mt-1">📷 เปิดดูรูปสภาพก่อนใช้งาน</a>
-          </div>
-          <div class="flex gap-2">
-            <button onclick="adminApprove('${l.LogID}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold">✅ อนุมัติการยืม</button>
-            <button onclick="adminReject('${l.LogID}')" class="bg-rose-500 hover:bg-rose-600 text-white px-3.5 py-2 rounded-xl text-xs font-semibold">❌ ปฏิเสธ</button>
-          </div>
-        </div>
-      `).join("") : `<p class="text-sm text-slate-400">ไม่มีคำขอรออนุมัติในขณะนี้</p>`;
-
-      document.getElementById("adminPendingVerify").innerHTML = pendingVer.length ? pendingVer.map(l => `
-        <div class="border border-emerald-200 bg-emerald-50/30 p-4 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-          <div class="space-y-1">
-            <p class="font-bold text-sm">${l.UserName} (${l.Role}) • คืน: ${l.ItemName} (x${l.Qty})</p>
-            <p class="text-xs text-slate-500">วันที่ส่งคืน: ${l.ActualReturnDate}</p>
-            <div class="flex gap-4 pt-1">
-              <a href="${l.BeforeImgURL}" target="_blank" class="text-xs text-blue-600 font-semibold underline">1️⃣ รูปก่อนใช้งาน (Before)</a>
-              <a href="${l.AfterImgURL}" target="_blank" class="text-xs text-emerald-700 font-semibold underline">2️⃣ รูปหลังใช้งาน (After)</a>
-            </div>
-          </div>
-          <button onclick="adminVerifyReturn('${l.LogID}')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-semibold">
-            🛡️ ยืนยันสภาพสมบูรณ์และรับคืน
-          </button>
-        </div>
-      `).join("") : `<p class="text-sm text-slate-400">ไม่มีรายการรอตรวจสอบการคืน</p>`;
     }
 
     async function adminApprove(logId) {
@@ -686,11 +1065,66 @@
     }
 
     async function adminVerifyReturn(logId) {
-      const note = prompt("บันทึกผลการตรวจสอบสภาพอุปกรณ์ (เว้นว่างได้หากปกติ):", "สภาพสมบูรณ์ครบถ้วน");
+      const note = prompt("ผลการตรวจสภาพอุปกรณ์:", "สภาพสมบูรณ์ครบถ้วน");
       if (note === null) return;
       const res = await callGAS({ action: "verifyReturn", logId, adminNote: note });
       alert(res.message);
       loadAllData();
+    }
+
+    // --- 6. History & Manage ---
+    function renderHistory() {
+      const filter = document.getElementById("historyStatusFilter").value;
+      const source = currentUser.role === "Admin" ? allLogsData : myLogsData;
+      const list = source.filter(l => filter === "ALL" || l.Status === filter);
+
+      document.getElementById("historyList").innerHTML = list.length ? list.map(l => {
+        const st = STATUS_BADGE[l.Status] || { label: l.Status, cls: "bg-slate-100" };
+        return `
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="font-bold text-sm text-slate-800">${l.ItemName} (x${l.Qty})</span>
+                <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold ${st.cls}">${st.label}</span>
+                ${currentUser.role === "Admin" ? `<span class="text-xs text-indigo-600 font-medium">โดย: ${l.UserName}</span>` : ""}
+              </div>
+              <p class="text-xs text-slate-500">ยืม: ${l.BorrowDate} | กำหนดคืน: ${l.ReturnDueDate} ${l.ActualReturnDate ? `| คืนจริง: ${l.ActualReturnDate}` : ""}</p>
+              <p class="text-xs text-slate-500">วัตถุประสงค์: ${l.Note}</p>
+            </div>
+            <div class="flex gap-3 text-xs font-semibold shrink-0">
+              ${l.BeforeImgURL ? `<a href="${l.BeforeImgURL}" target="_blank" class="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100">🖼️ ก่อนใช้</a>` : ""}
+              ${l.AfterImgURL ? `<a href="${l.AfterImgURL}" target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100">🖼️ หลังใช้</a>` : ""}
+            </div>
+          </div>
+        `;
+      }).join("") : `<div class="bg-white p-8 rounded-3xl text-center text-slate-400 text-sm border">ไม่พบประวัติรายการ</div>`;
+    }
+
+    function renderManageInventory() {
+      document.getElementById("manageInventoryTable").innerHTML = `
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="border-b text-slate-500 text-xs">
+              <th class="py-3 px-2">รหัส</th>
+              <th class="py-3 px-2">ชื่ออุปกรณ์</th>
+              <th class="py-3 px-2">หมวดหมู่</th>
+              <th class="py-3 px-2">ที่เก็บ</th>
+              <th class="py-3 px-2 text-right">คงเหลือ / ทั้งหมด</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y">
+            ${equipmentData.map(e => `
+              <tr class="hover:bg-slate-50">
+                <td class="py-3 px-2 font-mono text-xs">${e.ItemID}</td>
+                <td class="py-3 px-2 font-semibold">${e.Name}</td>
+                <td class="py-3 px-2">${e.Category}</td>
+                <td class="py-3 px-2 text-slate-500">${e.Location}</td>
+                <td class="py-3 px-2 text-right font-bold text-indigo-600">${e.AvailableQty} / ${e.TotalQty}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
     }
 
     async function handleAddEquipment(e) {
@@ -707,7 +1141,28 @@
       loadAllData();
     }
 
-    // --- 7. Utility Functions ---
+    // --- 7. PIN Lock / Switch Feature ---
+    function openPinModal() {
+      document.getElementById("pinInput").value = "";
+      document.getElementById("pinModal").classList.remove("hidden");
+    }
+
+    async function verifyPinUnlock(e) {
+      e.preventDefault();
+      const pin = document.getElementById("pinInput").value;
+      const res = await callGAS({ action: "loginPin", pin: pin });
+      if (res.status === "success") {
+        currentUser = res.user;
+        sessionStorage.setItem("scilab_user", JSON.stringify(currentUser));
+        closeModal("pinModal");
+        initWorkspace();
+        alert("สลับ/ปลดล็อกสิทธิ์เป็น: " + currentUser.fullName);
+      } else {
+        alert(res.message);
+      }
+    }
+
+    // --- Utilities ---
     function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
 
     function previewImage(input, imgId) {
@@ -748,7 +1203,7 @@
         });
         return await response.json();
       } catch (err) {
-        alert("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาตรวจสอบ Web App URL: " + err.message);
+        alert("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้ กรุณาตรวจสอบ Web App URL (/exec) จากบัญชี @gmail.com: " + err.message);
         return { status: "error", message: err.message };
       }
     }
